@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/carnet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/fondo_app">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/logo_fitness"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:fontFamily="@font/letra_marca"
+            android:gravity="center"
+            android:text="Fitness Center"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/apto_fisico"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+        <TextView
+            android:id="@+id/apto_fisico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="APTO FISICO"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/Vencimiento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vencimiento: 31/03/2027"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/ivApto"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/carnet_panel"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+        <TextView
+            android:id="@+id/Nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="JUAN PEREZ"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Socio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="N° Socio:"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/Dni"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DNI:"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/Vigencia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vigencia:"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+</LinearLayout>
