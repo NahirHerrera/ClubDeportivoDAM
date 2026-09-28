@@ -52,18 +52,23 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:background="@drawable/campo_textologin"
         android:hint="Email"
         android:inputType="textEmailAddress"
+        android:drawableStart="@drawable/ic_usuario"
         android:drawablePadding="10dp"
         android:paddingHorizontal="12dp"
         android:layout_marginBottom="20dp"/>
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:background="@drawable/campo_textologin"
         android:hint="Contraseña"
         android:inputType="textPassword"
+        android:drawableStart="@drawable/ic_password"
+        android:drawablePadding="10dp"
+        android:paddingHorizontal="12dp"
         android:layout_marginBottom="20dp"/>
     <Button
         android:id="@+id/btnIniciarSesion"
