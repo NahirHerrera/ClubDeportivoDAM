@@ -31,8 +31,16 @@
             android:textColor="@color/white"
             android:fontFamily="@font/letra_marca"
             android:layout_marginBottom="40dp"/>
-</LinearLayout>
+    </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Ingresá a tu cuenta"
+        android:textColor="@color/texto_home"
+        android:textSize="20dp"
+        android:translationY="-10dp"/>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="0dp"
@@ -40,21 +48,16 @@
     android:background="@drawable/contenedor_login"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="24dp">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ingresá a tu cuenta"
-        android:translationY="-100dp"
-        android:textSize="20dp"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:layout_marginBottom="10dp"/>
+    android:padding="20dp">
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/campo_textologin"
         android:hint="Email"
         android:inputType="textEmailAddress"
+        android:drawablePadding="10dp"
+        android:paddingHorizontal="12dp"
         android:layout_marginBottom="20dp"/>
     <EditText
         android:layout_width="match_parent"
@@ -69,5 +72,13 @@
         android:text="Iniciar sesión"
         android:backgroundTint="@color/botones"
         android:textColor="@color/black"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="¿Olvidaste tu contraseña?"
+        android:textColor="@color/texto_home"
+        android:textSize="15dp"
+        android:translationY="42dp"/>
     </LinearLayout>
-    </LinearLayout>
+</LinearLayout>
