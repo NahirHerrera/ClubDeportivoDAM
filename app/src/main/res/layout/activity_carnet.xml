@@ -7,62 +7,73 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical"
-    android:gravity="center"
+    android:gravity="top|center_horizontal"
     android:background="@drawable/fondo_app">
 
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/logo_fitness"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
-            android:fontFamily="@font/letra_marca"
-            android:gravity="center"
-            android:text="Fitness Center"
-            android:textColor="@color/white"
-            android:textSize="20sp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/apto_fisico"
-            android:orientation="vertical"
-            android:padding="12dp">
-
-        <TextView
-            android:id="@+id/apto_fisico"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="APTO FISICO"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/Vencimiento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Vencimiento: 31/03/2027"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
     <ImageView
-        android:id="@+id/ivApto"
-        android:layout_width="32dp"
-        android:layout_height="32dp"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/logo_fitness"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:fontFamily="@font/letra_marca"
+        android:gravity="center"
+        android:text="Fitness Center"
+        android:textColor="@color/white"
+        android:textSize="20sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/apto_fisico"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/carnet_panel"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/apto_fisico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="APTO FISICO"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/Vencimiento"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Vencimiento: 31/03/2027"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/img_apto"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/img_apto_fisico" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/carnet_panel"
+        android:layout_marginHorizontal="32dp"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:layout_marginBottom="20dp">
 
         <TextView
             android:id="@+id/Nombre"
@@ -71,28 +82,45 @@
             android:gravity="center"
             android:text="JUAN PEREZ"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/Socio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="N° Socio:"
-            android:textColor="@color/black"/>
+            android:text="N° Socio: 0001"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/Dni"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="DNI:"
-            android:textColor="@color/black"/>
+            android:text="DNI: 26.298.456"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/Vigencia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vigencia:"
-            android:textColor="@color/black"/>
+            android:text="Vigencia: ACTIVO"
+            android:textColor="@color/black" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_qr"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:padding="8dp"
+        android:src="@drawable/qr_socio"
+        android:layout_marginBottom="20dp"/>
+    <Button
+        android:id="@+id/btnVolver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Volver"
+        android:backgroundTint="@color/botones"
+        android:textColor="@color/black"/>
 </LinearLayout>
