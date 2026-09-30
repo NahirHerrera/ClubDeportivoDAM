@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/fondo">
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/logo_fitness"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fitness Center"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:fontFamily="@font/letra_marca"
+            android:layout_marginBottom="40dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <Button
+                android:id="@+id/btnRegistrarCliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Registrar Cliente"
+                android:backgroundTint="@color/botones"
+                android:textColor="@color/black"
+                android:layout_marginBottom="30dp"
+
+                />
+
+            <Button
+                android:id="@+id/btnCobrarCuota"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cobrar Cuota"
+                android:backgroundTint="@color/botones"
+                android:textColor="@color/black"
+                android:layout_marginBottom="30dp" />
+
+            <Button
+                android:id="@+id/btnActividad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Actividad"
+                android:backgroundTint="@color/botones"
+                android:textColor="@color/black"
+                android:layout_marginBottom="30dp" />
+
+            <Button
+                android:id="@+id/btnListadoDeDeudores"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Emitir Listado de Deudores"
+                android:backgroundTint="@color/botones"
+                android:textColor="@color/black"
+                android:layout_marginBottom="30dp" />
+
+            <Button
+                android:id="@+id/btnListadoDeClientes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Emitir Listado de Clientes"
+                android:backgroundTint="@color/botones"
+                android:textColor="@color/black"
+                android:layout_marginBottom="100dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cerrar sesión"
+                android:textColor="@color/texto_home"/>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
