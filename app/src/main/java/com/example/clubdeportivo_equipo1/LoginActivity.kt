@@ -13,8 +13,8 @@ class LoginActivity : AppCompatActivity() {
 
         val btnIniciarSesion = findViewById<Button>(R.id.btnIniciarSesion)
         btnIniciarSesion.setOnClickListener {
-            Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, LoginActivity::class.java)
+            Toast.makeText(this, "¡Bienvenido al sistema!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
     }
