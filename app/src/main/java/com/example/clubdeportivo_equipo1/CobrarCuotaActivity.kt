@@ -3,9 +3,12 @@ package com.example.clubdeportivo_equipo1
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -14,22 +17,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class CobrarCuotaActivity : AppCompatActivity() {
 
+    companion object {
+        const val EXTRA_DNI_SOCIO = "dni_socio"
+    }
+
     private lateinit var etDni: EditText
     private lateinit var panelSocio: LinearLayout
     private lateinit var tvNombreSocio: TextView
-    private lateinit var tvNumeroSocio: TextView
-    private lateinit var tvDniSocio: TextView
     private lateinit var tvEstadoCuota: TextView
+    private lateinit var tvDatosSocio: TextView
     private lateinit var panelPago: LinearLayout
-    private lateinit var panelComprobante: LinearLayout
-    private lateinit var tvComprobante: TextView
-    private lateinit var btnVerCarnet: Button
+    private lateinit var rgMedioPago: RadioGroup
 
     private var socioActual: Socio? = null
     private val formatoMoneda = NumberFormat.getCurrencyInstance(Locale("es", "AR"))
@@ -47,47 +49,39 @@ class CobrarCuotaActivity : AppCompatActivity() {
         etDni = findViewById(R.id.etDni)
         panelSocio = findViewById(R.id.panelSocio)
         tvNombreSocio = findViewById(R.id.tvNombreSocio)
-        tvNumeroSocio = findViewById(R.id.tvNumeroSocio)
-        tvDniSocio = findViewById(R.id.tvDniSocio)
         tvEstadoCuota = findViewById(R.id.tvEstadoCuota)
+        tvDatosSocio = findViewById(R.id.tvDatosSocio)
         panelPago = findViewById(R.id.panelPago)
-        panelComprobante = findViewById(R.id.panelComprobante)
-        tvComprobante = findViewById(R.id.tvComprobante)
-        btnVerCarnet = findViewById(R.id.btnVerCarnet)
+        rgMedioPago = findViewById(R.id.rgMedioPago)
 
         val cuota = SociosRepository.VALOR_CUOTA
-        val textoEfectivo = "Efectivo"
-        val texto3Cuotas = "3 cuotas sin interés de ${formatoMoneda.format(cuota / 3)}"
-        val texto6Cuotas = "6 cuotas sin interés de ${formatoMoneda.format(cuota / 6)}"
-
-        findViewById<TextView>(R.id.tvMontoCuota).text = "Cuota mensual: ${formatoMoneda.format(cuota)}"
-
-        val btnEfectivo = findViewById<Button>(R.id.btnEfectivo)
-        val btn3Cuotas = findViewById<Button>(R.id.btn3Cuotas)
-        val btn6Cuotas = findViewById<Button>(R.id.btn6Cuotas)
-        btnEfectivo.text = textoEfectivo
-        btn3Cuotas.text = texto3Cuotas
-        btn6Cuotas.text = texto6Cuotas
-
-        btnEfectivo.setOnClickListener { confirmarPago(textoEfectivo) }
-        btn3Cuotas.setOnClickListener { confirmarPago(texto3Cuotas) }
-        btn6Cuotas.setOnClickListener { confirmarPago(texto6Cuotas) }
+        findViewById<RadioButton>(R.id.rbEfectivo).text =
+            "Efectivo (10% de Descuento)\n${formatoMoneda.format(SociosRepository.montoEfectivo())}"
+        findViewById<RadioButton>(R.id.rb3Cuotas).text =
+            "Tarjeta de Crédito:\n3 Cuotas Sin Interés de ${formatoMoneda.format(cuota / 3)}"
+        findViewById<RadioButton>(R.id.rb6Cuotas).text =
+            "Tarjeta de Crédito:\n6 Cuotas Sin Interés de ${formatoMoneda.format(cuota / 6)}"
 
         findViewById<Button>(R.id.btnBuscar).setOnClickListener { buscarSocio() }
-        findViewById<Button>(R.id.btnVolver).setOnClickListener { finish() }
-
-        btnVerCarnet.setOnClickListener {
-            socioActual?.let { socio ->
-                val intent = Intent(this, CarnetActivity::class.java)
-                intent.putExtra(CarnetActivity.EXTRA_DNI, socio.dni)
-                startActivity(intent)
+        etDni.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                buscarSocio()
+                true
+            } else {
+                false
             }
         }
+
+        findViewById<Button>(R.id.btnPagarCuota).setOnClickListener { pagarCuota() }
+        findViewById<Button>(R.id.btnMostrarCarnet).setOnClickListener { onMostrarCarnet() }
+        findViewById<Button>(R.id.btnVolver).setOnClickListener { finish() }
     }
 
     private fun buscarSocio() {
         val dni = etDni.text.toString().trim()
-        ocultarResultados()
+        socioActual = null
+        panelSocio.visibility = View.GONE
+        panelPago.visibility = View.GONE
 
         if (dni.isEmpty()) {
             etDni.error = "Ingresá un DNI"
@@ -101,68 +95,101 @@ class CobrarCuotaActivity : AppCompatActivity() {
         }
 
         socioActual = socio
-        tvNombreSocio.text = socio.nombreCompleto.uppercase()
-        tvNumeroSocio.text = "N° Socio: ${socio.numeroFormateado}"
-        tvDniSocio.text = "DNI: ${socio.dniFormateado}"
+        tvNombreSocio.text = socio.nombreCompleto
+        tvDatosSocio.text = "N° Socio: ${socio.numeroFormateado}  •  DNI: ${socio.dniFormateado}"
         panelSocio.visibility = View.VISIBLE
 
         if (socio.cuotaAlDia) {
-            tvEstadoCuota.text = "CUOTA AL DÍA"
+            tvEstadoCuota.text = "Al día"
             AlertDialog.Builder(this)
                 .setTitle("Cuota al día")
                 .setMessage("Este socio tiene la cuota al dia")
                 .setPositiveButton("Aceptar", null)
                 .show()
         } else {
-            tvEstadoCuota.text = "CUOTA PENDIENTE DE PAGO"
+            tvEstadoCuota.text = "Debe cuota"
+            rgMedioPago.clearCheck()
             panelPago.visibility = View.VISIBLE
         }
     }
 
-    private fun confirmarPago(medioPago: String) {
-        val socio = socioActual ?: return
+    private fun pagarCuota() {
+        val socio = socioActual
+        if (socio == null) {
+            Toast.makeText(this, "Primero buscá un socio por DNI", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (socio.cuotaAlDia) {
+            Toast.makeText(this, "Este socio tiene la cuota al dia", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val cuota = SociosRepository.VALOR_CUOTA
+        val (medioPago, monto) = when (rgMedioPago.checkedRadioButtonId) {
+            R.id.rbEfectivo -> "Efectivo (10% de descuento)" to SociosRepository.montoEfectivo()
+            R.id.rb3Cuotas -> "Tarjeta de Crédito - 3 cuotas sin interés" to cuota
+            R.id.rb6Cuotas -> "Tarjeta de Crédito - 6 cuotas sin interés" to cuota
+            else -> {
+                Toast.makeText(this, "Seleccioná una forma de pago", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+
         AlertDialog.Builder(this)
             .setTitle("Confirmar pago")
-            .setMessage("¿Registrar el pago de la cuota de ${socio.nombreCompleto} en $medioPago?")
-            .setPositiveButton("Abonar") { _, _ -> abonarCuota(socio, medioPago) }
+            .setMessage("¿Registrar el pago de ${formatoMoneda.format(monto)} de ${socio.nombreCompleto} con $medioPago?")
+            .setPositiveButton("Pagar") { _, _ -> registrarPago(socio, medioPago, monto) }
             .setNegativeButton("Cancelar", null)
             .show()
     }
 
-    private fun abonarCuota(socio: Socio, medioPago: String) {
+    private fun registrarPago(socio: Socio, medioPago: String, monto: Double) {
         val nroComprobante = SociosRepository.registrarPago(socio)
-        val fecha = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
 
-        tvEstadoCuota.text = "CUOTA AL DÍA"
+        tvEstadoCuota.text = "Al día"
         panelPago.visibility = View.GONE
-
-        tvComprobante.text = """
-            Comprobante N°: $nroComprobante
-            Fecha: $fecha
-            Socio: ${socio.nombreCompleto}
-            N° Socio: ${socio.numeroFormateado}
-            DNI: ${socio.dniFormateado}
-            Concepto: Cuota mensual
-            Medio de pago: $medioPago
-            Total abonado: ${formatoMoneda.format(SociosRepository.VALOR_CUOTA)}
-        """.trimIndent()
 
         AlertDialog.Builder(this)
             .setTitle("Pago registrado")
             .setMessage("La cuota de ${socio.nombreCompleto} fue abonada correctamente.")
             .setCancelable(false)
-            .setPositiveButton("Ver comprobante") { _, _ ->
-                panelComprobante.visibility = View.VISIBLE
-                btnVerCarnet.visibility = View.VISIBLE
+            .setPositiveButton("Ver Comprobante") { _, _ ->
+                mostrarComprobante(socio, medioPago, monto, nroComprobante)
             }
+            .setNegativeButton("Cerrar", null)
             .show()
     }
 
-    private fun ocultarResultados() {
-        socioActual = null
-        panelSocio.visibility = View.GONE
-        panelPago.visibility = View.GONE
-        panelComprobante.visibility = View.GONE
-        btnVerCarnet.visibility = View.GONE
+    private fun onMostrarCarnet() {
+        val socio = socioActual
+        if (socio == null) {
+            Toast.makeText(this, "Primero buscá un socio por DNI", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (!socio.cuotaAlDia) {
+            Toast.makeText(this, "El socio debe tener la cuota al día para ver el carnet", Toast.LENGTH_SHORT).show()
+            return
+        }
+        mostrarCarnet(socio)
+    }
+
+    // ENDPOINT ABIERTO - Comprobante de pago.
+    // TODO: conectar con la pantalla de comprobante que desarrolla otro integrante del equipo.
+    // Recibe todos los datos del pago para que el comprobante los pueda mostrar.
+    private fun mostrarComprobante(socio: Socio, medioPago: String, monto: Double, nroComprobante: Int) {
+        Toast.makeText(
+            this,
+            "Comprobante N° $nroComprobante (${formatoMoneda.format(monto)}): pendiente de integración",
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    // ENDPOINT ABIERTO - Carnet del socio.
+    // TODO: conectar con el carnet que está desarrollando el compañero.
+    // Por ahora abre CarnetActivity y le pasa el DNI del socio en EXTRA_DNI_SOCIO.
+    private fun mostrarCarnet(socio: Socio) {
+        val intent = Intent(this, CarnetActivity::class.java)
+        intent.putExtra(EXTRA_DNI_SOCIO, socio.dni)
+        startActivity(intent)
     }
 }

@@ -7,7 +7,9 @@ data class Socio(
     val dni: String,
     val activo: Boolean,
     var cuotaAlDia: Boolean,
-    val actividades: List<String>
+    val actividades: List<String>,
+    val fechaInscripcion: String,
+    val tipoCliente: String = "Socio"
 ) {
     val nombreCompleto: String
         get() = "$nombre $apellido"
