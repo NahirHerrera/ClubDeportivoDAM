@@ -11,6 +11,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
         val txtEmail = findViewById<EditText>(R.id.txtEmail)
         val txtPassword = findViewById<EditText>(R.id.txtPass)
         val btnLogin = findViewById<Button>(R.id.btnIniciarSesion)
@@ -31,10 +32,9 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Toast.makeText(this, "Campos correctos. Iniciando sesión...", Toast.LENGTH_SHORT).show()
-
             val btnIniciarSesion = findViewById<Button>(R.id.btnIniciarSesion)
             btnIniciarSesion.setOnClickListener {
+                Toast.makeText(this, "Campos correctos. Iniciando sesión...", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
             }
