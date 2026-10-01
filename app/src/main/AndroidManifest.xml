@@ -27,6 +27,13 @@
             android:name=".HomeActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".CobrarCuotaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ListadoClientesActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
