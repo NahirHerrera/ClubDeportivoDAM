@@ -46,13 +46,13 @@
         android:translationY="-10dp"/>
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:background="@drawable/contenedor_login"
-    android:gravity="center_vertical"
-    android:orientation="vertical"
-    android:padding="20dp">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/contenedor_login"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="20dp">
 
     <EditText
         android:id="@+id/txtEmail"
@@ -85,6 +85,7 @@
         android:text="Iniciar sesión"
         android:backgroundTint="@color/botones"
         android:textColor="@color/black"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -93,5 +94,7 @@
         android:textColor="@color/texto_home"
         android:textSize="15dp"
         android:translationY="42dp"/>
+
     </LinearLayout>
+
 </LinearLayout>
