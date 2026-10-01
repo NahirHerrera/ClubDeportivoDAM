@@ -75,11 +75,12 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tvTotalClientes"
+            android:id="@+id/tvMensaje"
+            android:text="Ingresá el DNI del cliente para ver sus actividades"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/campos_login"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="10dp"/>
 

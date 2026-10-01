@@ -7,9 +7,10 @@ data class Socio(
     val dni: String,
     val activo: Boolean,
     var cuotaAlDia: Boolean,
-    val actividades: List<String>,
     val fechaInscripcion: String,
-    val tipoCliente: String = "Socio"
+    val tipoCliente: String = "Socio",
+    // Se completa desde el menú Actividad (solo si tiene la cuota al día)
+    val actividades: MutableList<String> = mutableListOf()
 ) {
     val nombreCompleto: String
         get() = "$nombre $apellido"

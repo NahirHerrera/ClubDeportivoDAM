@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 class ListadoClientesActivity : AppCompatActivity() {
 
     private lateinit var etBuscarDni: EditText
-    private lateinit var tvTotalClientes: TextView
+    private lateinit var tvMensaje: TextView
     private lateinit var contenedor: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,44 +28,52 @@ class ListadoClientesActivity : AppCompatActivity() {
         }
 
         etBuscarDni = findViewById(R.id.etBuscarDni)
-        tvTotalClientes = findViewById(R.id.tvTotalClientes)
+        tvMensaje = findViewById(R.id.tvMensaje)
         contenedor = findViewById(R.id.contenedorClientes)
 
-        findViewById<Button>(R.id.btnBuscar).setOnClickListener { mostrarClientes() }
+        findViewById<Button>(R.id.btnBuscar).setOnClickListener { buscarCliente() }
         etBuscarDni.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                mostrarClientes()
+                buscarCliente()
                 true
             } else {
                 false
             }
         }
         findViewById<Button>(R.id.btnVolver).setOnClickListener { finish() }
-
-        mostrarClientes()
     }
 
-    private fun mostrarClientes() {
-        val texto = etBuscarDni.text.toString().trim()
-        val clientes = SociosRepository.buscarActivosPorDni(texto)
-
-        tvTotalClientes.text = when {
-            clientes.isEmpty() -> "No se encontraron clientes con ese documento"
-            texto.isEmpty() -> "Clientes activos: ${clientes.size}"
-            else -> "Resultados: ${clientes.size}"
-        }
-
+    private fun buscarCliente() {
+        val dni = etBuscarDni.text.toString().trim()
         contenedor.removeAllViews()
-        for (socio in clientes) {
-            val item = layoutInflater.inflate(R.layout.item_cliente, contenedor, false)
-            item.findViewById<TextView>(R.id.tvIdCliente).text = "ID Cliente: ${socio.numeroFormateado}"
-            item.findViewById<TextView>(R.id.tvTipoCliente).text = socio.tipoCliente
-            item.findViewById<TextView>(R.id.tvNombre).text = socio.nombreCompleto
-            item.findViewById<TextView>(R.id.tvDni).text = "DNI: ${socio.dniFormateado}"
-            item.findViewById<TextView>(R.id.tvActividades).text = socio.actividades.joinToString(", ")
-            item.findViewById<TextView>(R.id.tvFechaInscripcion).text =
-                "Inscripción: ${socio.fechaInscripcion}"
-            contenedor.addView(item)
+
+        if (dni.isEmpty()) {
+            etBuscarDni.error = "Ingresá un DNI"
+            tvMensaje.text = "Ingresá el DNI del cliente para ver sus actividades"
+            return
         }
+
+        val socio = SociosRepository.buscarPorDni(dni)
+        tvMensaje.text = when {
+            socio == null -> "No existe un cliente con DNI $dni"
+            !socio.activo -> "El cliente con DNI $dni no está activo"
+            // Sin la cuota paga no figura en el listado de clientes
+            !socio.cuotaAlDia -> "El cliente con DNI $dni no tiene la cuota al día, por eso no figura en el listado"
+            else -> ""
+        }
+        if (socio == null || !socio.activo || !socio.cuotaAlDia) return
+
+        val item = layoutInflater.inflate(R.layout.item_cliente, contenedor, false)
+        item.findViewById<TextView>(R.id.tvIdCliente).text = "ID Cliente: ${socio.numeroFormateado}"
+        item.findViewById<TextView>(R.id.tvTipoCliente).text = socio.tipoCliente
+        item.findViewById<TextView>(R.id.tvNombre).text = socio.nombreCompleto
+        item.findViewById<TextView>(R.id.tvDni).text = "DNI: ${socio.dniFormateado}"
+        item.findViewById<TextView>(R.id.tvCuota).text = "Cuota: Al día"
+        item.findViewById<TextView>(R.id.tvFechaInscripcion).text =
+            "Fecha de inscripción: ${socio.fechaInscripcion}"
+        item.findViewById<TextView>(R.id.tvActividades).text =
+            if (socio.actividades.isEmpty()) "Sin actividades inscriptas"
+            else socio.actividades.joinToString("\n") { "• $it" }
+        contenedor.addView(item)
     }
 }

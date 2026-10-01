@@ -7,8 +7,7 @@
     android:layout_marginBottom="12dp"
     android:background="@drawable/fondo_blanco"
     android:orientation="vertical"
-    android:paddingHorizontal="12dp"
-    android:paddingVertical="8dp">
+    android:padding="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,36 +41,44 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:textColor="@color/black"
-        android:textSize="13sp"
+        android:textSize="15sp"
         android:textStyle="bold"/>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tvDni"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:textColor="@color/black"
+        android:textSize="13sp"/>
 
-        <TextView
-            android:id="@+id/tvDni"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/black"
-            android:textSize="12sp"/>
-
-        <TextView
-            android:id="@+id/tvActividades"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:textColor="@color/black"
-            android:textSize="12sp"/>
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tvCuota"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="13sp"/>
 
     <TextView
         android:id="@+id/tvFechaInscripcion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/texto_home"
-        android:textSize="11sp"/>
+        android:textSize="12sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Actividades inscriptas"
+        android:textColor="@color/botones"
+        android:textSize="13sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvActividades"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="2dp"
+        android:textColor="@color/black"
+        android:textSize="13sp"/>
 </LinearLayout>
