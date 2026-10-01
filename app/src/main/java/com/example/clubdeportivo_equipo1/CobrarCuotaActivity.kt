@@ -1,14 +1,11 @@
 package com.example.clubdeportivo_equipo1
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -30,7 +27,6 @@ class CobrarCuotaActivity : AppCompatActivity() {
     private lateinit var tvDniSocio: TextView
     private lateinit var tvEstadoCuota: TextView
     private lateinit var panelPago: LinearLayout
-    private lateinit var rgMedioPago: RadioGroup
     private lateinit var panelComprobante: LinearLayout
     private lateinit var tvComprobante: TextView
     private lateinit var btnVerCarnet: Button
@@ -42,7 +38,7 @@ class CobrarCuotaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_cobrar_cuota)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.cobrarCuota)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -55,20 +51,29 @@ class CobrarCuotaActivity : AppCompatActivity() {
         tvDniSocio = findViewById(R.id.tvDniSocio)
         tvEstadoCuota = findViewById(R.id.tvEstadoCuota)
         panelPago = findViewById(R.id.panelPago)
-        rgMedioPago = findViewById(R.id.rgMedioPago)
         panelComprobante = findViewById(R.id.panelComprobante)
         tvComprobante = findViewById(R.id.tvComprobante)
         btnVerCarnet = findViewById(R.id.btnVerCarnet)
 
         val cuota = SociosRepository.VALOR_CUOTA
+        val textoEfectivo = "Efectivo"
+        val texto3Cuotas = "3 cuotas sin interés de ${formatoMoneda.format(cuota / 3)}"
+        val texto6Cuotas = "6 cuotas sin interés de ${formatoMoneda.format(cuota / 6)}"
+
         findViewById<TextView>(R.id.tvMontoCuota).text = "Cuota mensual: ${formatoMoneda.format(cuota)}"
-        findViewById<RadioButton>(R.id.rb3Cuotas).text =
-            "3 cuotas sin interés de ${formatoMoneda.format(cuota / 3)}"
-        findViewById<RadioButton>(R.id.rb6Cuotas).text =
-            "6 cuotas sin interés de ${formatoMoneda.format(cuota / 6)}"
+
+        val btnEfectivo = findViewById<Button>(R.id.btnEfectivo)
+        val btn3Cuotas = findViewById<Button>(R.id.btn3Cuotas)
+        val btn6Cuotas = findViewById<Button>(R.id.btn6Cuotas)
+        btnEfectivo.text = textoEfectivo
+        btn3Cuotas.text = texto3Cuotas
+        btn6Cuotas.text = texto6Cuotas
+
+        btnEfectivo.setOnClickListener { confirmarPago(textoEfectivo) }
+        btn3Cuotas.setOnClickListener { confirmarPago(texto3Cuotas) }
+        btn6Cuotas.setOnClickListener { confirmarPago(texto6Cuotas) }
 
         findViewById<Button>(R.id.btnBuscar).setOnClickListener { buscarSocio() }
-        findViewById<Button>(R.id.btnAbonar).setOnClickListener { abonarCuota() }
         findViewById<Button>(R.id.btnVolver).setOnClickListener { finish() }
 
         btnVerCarnet.setOnClickListener {
@@ -103,7 +108,6 @@ class CobrarCuotaActivity : AppCompatActivity() {
 
         if (socio.cuotaAlDia) {
             tvEstadoCuota.text = "CUOTA AL DÍA"
-            tvEstadoCuota.setTextColor(Color.parseColor("#2E7D32"))
             AlertDialog.Builder(this)
                 .setTitle("Cuota al día")
                 .setMessage("Este socio tiene la cuota al dia")
@@ -111,31 +115,25 @@ class CobrarCuotaActivity : AppCompatActivity() {
                 .show()
         } else {
             tvEstadoCuota.text = "CUOTA PENDIENTE DE PAGO"
-            tvEstadoCuota.setTextColor(Color.parseColor("#C62828"))
-            rgMedioPago.clearCheck()
             panelPago.visibility = View.VISIBLE
         }
     }
 
-    private fun abonarCuota() {
+    private fun confirmarPago(medioPago: String) {
         val socio = socioActual ?: return
-        val cuota = SociosRepository.VALOR_CUOTA
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar pago")
+            .setMessage("¿Registrar el pago de la cuota de ${socio.nombreCompleto} en $medioPago?")
+            .setPositiveButton("Abonar") { _, _ -> abonarCuota(socio, medioPago) }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
 
-        val medioPago = when (rgMedioPago.checkedRadioButtonId) {
-            R.id.rbEfectivo -> "Efectivo"
-            R.id.rb3Cuotas -> "3 cuotas sin interés de ${formatoMoneda.format(cuota / 3)}"
-            R.id.rb6Cuotas -> "6 cuotas sin interés de ${formatoMoneda.format(cuota / 6)}"
-            else -> {
-                Toast.makeText(this, "Seleccioná un medio de pago", Toast.LENGTH_SHORT).show()
-                return
-            }
-        }
-
+    private fun abonarCuota(socio: Socio, medioPago: String) {
         val nroComprobante = SociosRepository.registrarPago(socio)
         val fecha = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
 
         tvEstadoCuota.text = "CUOTA AL DÍA"
-        tvEstadoCuota.setTextColor(Color.parseColor("#2E7D32"))
         panelPago.visibility = View.GONE
 
         tvComprobante.text = """
@@ -146,7 +144,7 @@ class CobrarCuotaActivity : AppCompatActivity() {
             DNI: ${socio.dniFormateado}
             Concepto: Cuota mensual
             Medio de pago: $medioPago
-            Total abonado: ${formatoMoneda.format(cuota)}
+            Total abonado: ${formatoMoneda.format(SociosRepository.VALOR_CUOTA)}
         """.trimIndent()
 
         AlertDialog.Builder(this)

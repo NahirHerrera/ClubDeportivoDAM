@@ -1,225 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/cobrarCuota"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondo_app"
-    android:fillViewport="true">
+    tools:context=".CobrarCuotaActivity">
 
     <LinearLayout
+        android:id="@+id/cobrarCuota"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:layout_height="match_parent"
+        android:padding="24dp"
         android:orientation="vertical"
-        android:gravity="top|center_horizontal">
+        android:gravity="center_horizontal"
+        android:background="@drawable/fondo">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:src="@drawable/logo_fitness"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:fontFamily="@font/letra_marca"
-            android:gravity="center"
             android:text="Fitness Center"
+            android:textSize="14sp"
+            android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="20sp"/>
+            android:fontFamily="@font/letra_marca"
+            android:layout_marginBottom="24dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:gravity="center"
             android:text="Cobrar Cuota"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="22sp"
-            android:textStyle="bold"/>
+            android:layout_marginBottom="20dp"/>
 
-        <!-- Búsqueda por DNI -->
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/contenedor_login"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <EditText
-                android:id="@+id/etDni"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/campo_textologin"
-                android:hint="DNI del socio"
-                android:inputType="number"
-                android:maxLength="8"
-                android:drawableStart="@drawable/ic_usuario"
-                android:drawablePadding="10dp"
-                android:paddingHorizontal="12dp"
-                android:layout_marginBottom="16dp"/>
-
-            <Button
-                android:id="@+id/btnBuscar"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Buscar socio"
-                android:backgroundTint="@color/botones"
-                android:textColor="@color/black"/>
-        </LinearLayout>
+                android:orientation="vertical">
 
-        <!-- Datos del socio encontrado -->
-        <LinearLayout
-            android:id="@+id/panelSocio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/carnet_panel"
-            android:orientation="vertical"
-            android:padding="15dp"
-            android:visibility="gone">
+                <!-- Búsqueda por DNI -->
+                <EditText
+                    android:id="@+id/etDni"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/campo_textologin"
+                    android:hint="DNI del socio"
+                    android:inputType="number"
+                    android:maxLength="8"
+                    android:drawableStart="@drawable/ic_usuario"
+                    android:drawablePadding="10dp"
+                    android:paddingHorizontal="12dp"
+                    android:layout_marginBottom="20dp"/>
 
-            <TextView
-                android:id="@+id/tvNombreSocio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tvNumeroSocio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"/>
-
-            <TextView
-                android:id="@+id/tvDniSocio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"/>
-
-            <TextView
-                android:id="@+id/tvEstadoCuota"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
-
-        <!-- Medios de pago (solo si debe la cuota) -->
-        <LinearLayout
-            android:id="@+id/panelPago"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/contenedor_login"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tvMontoCuota"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="¿Cómo desea abonar?"
-                android:textColor="@color/white"/>
-
-            <RadioGroup
-                android:id="@+id/rgMedioPago"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp">
-
-                <RadioButton
-                    android:id="@+id/rbEfectivo"
+                <Button
+                    android:id="@+id/btnBuscar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/botones"
-                    android:text="Efectivo"
-                    android:textColor="@color/white"/>
+                    android:text="Buscar Socio"
+                    android:backgroundTint="@color/botones"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="30dp"/>
 
-                <RadioButton
-                    android:id="@+id/rb3Cuotas"
+                <!-- Datos del socio encontrado -->
+                <LinearLayout
+                    android:id="@+id/panelSocio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/botones"
-                    android:textColor="@color/white"/>
+                    android:background="@drawable/carnet_panel"
+                    android:orientation="vertical"
+                    android:padding="15dp"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone">
 
-                <RadioButton
-                    android:id="@+id/rb6Cuotas"
+                    <TextView
+                        android:id="@+id/tvNombreSocio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tvNumeroSocio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/tvDniSocio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="10dp"/>
+
+                    <TextView
+                        android:id="@+id/tvEstadoCuota"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/apto_fisico"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <!-- Medios de pago (solo si debe la cuota) -->
+                <LinearLayout
+                    android:id="@+id/panelPago"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/botones"
-                    android:textColor="@color/white"/>
-            </RadioGroup>
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-            <Button
-                android:id="@+id/btnAbonar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Abonar"
-                android:backgroundTint="@color/botones"
-                android:textColor="@color/black"/>
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvMontoCuota"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
 
-        <!-- Comprobante de pago -->
-        <LinearLayout
-            android:id="@+id/panelComprobante"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/carnet_panel"
-            android:orientation="vertical"
-            android:padding="15dp"
-            android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="¿Cómo desea abonar?"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="16dp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="COMPROBANTE DE PAGO"
-                android:textColor="@color/botones"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                    <Button
+                        android:id="@+id/btnEfectivo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Efectivo"
+                        android:backgroundTint="@color/botones"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="20dp"/>
 
-            <TextView
-                android:id="@+id/tvComprobante"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="4dp"
-                android:textColor="@color/black"/>
-        </LinearLayout>
+                    <Button
+                        android:id="@+id/btn3Cuotas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/botones"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="20dp"/>
 
-        <Button
-            android:id="@+id/btnVerCarnet"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="12dp"
-            android:text="Ver carnet del socio"
-            android:backgroundTint="@color/botones"
-            android:textColor="@color/black"
-            android:visibility="gone"/>
+                    <Button
+                        android:id="@+id/btn6Cuotas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/botones"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="20dp"/>
+                </LinearLayout>
+
+                <!-- Comprobante de pago -->
+                <LinearLayout
+                    android:id="@+id/panelComprobante"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/carnet_panel"
+                    android:orientation="vertical"
+                    android:padding="15dp"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="COMPROBANTE DE PAGO"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tvComprobante"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="4dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnVerCarnet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ver Carnet del Socio"
+                    android:backgroundTint="@color/botones"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </ScrollView>
 
         <Button
             android:id="@+id/btnVolver"
@@ -229,4 +218,5 @@
             android:backgroundTint="@color/botones"
             android:textColor="@color/black"/>
     </LinearLayout>
-</ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

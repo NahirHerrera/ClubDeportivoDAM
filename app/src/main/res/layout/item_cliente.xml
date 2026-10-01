@@ -4,8 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="16dp"
     android:background="@drawable/carnet_panel"
     android:orientation="vertical"
     android:padding="15dp">
@@ -14,22 +13,29 @@
         android:id="@+id/tvNombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/tvDatos"
+        android:id="@+id/tvSocio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/texto_home"/>
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tvDni"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:text="Actividades:"
-        android:textColor="@color/botones"
+        android:textColor="@color/white"
         android:textStyle="bold"/>
 
     <TextView

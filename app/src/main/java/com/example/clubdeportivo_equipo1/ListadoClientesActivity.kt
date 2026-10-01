@@ -14,21 +14,21 @@ class ListadoClientesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_listado_clientes)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.listadoClientes)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
         val clientes = SociosRepository.listarActivos()
-        findViewById<TextView>(R.id.tvTotalClientes).text = "Total: ${clientes.size} clientes"
+        findViewById<TextView>(R.id.tvTotalClientes).text = "Clientes activos: ${clientes.size}"
 
         val contenedor = findViewById<LinearLayout>(R.id.contenedorClientes)
         for (socio in clientes) {
             val item = layoutInflater.inflate(R.layout.item_cliente, contenedor, false)
             item.findViewById<TextView>(R.id.tvNombre).text = socio.nombreCompleto.uppercase()
-            item.findViewById<TextView>(R.id.tvDatos).text =
-                "N° Socio: ${socio.numeroFormateado}  •  DNI: ${socio.dniFormateado}"
+            item.findViewById<TextView>(R.id.tvSocio).text = "N° Socio: ${socio.numeroFormateado}"
+            item.findViewById<TextView>(R.id.tvDni).text = "DNI: ${socio.dniFormateado}"
             item.findViewById<TextView>(R.id.tvActividades).text =
                 socio.actividades.joinToString("\n") { "• $it" }
             contenedor.addView(item)
