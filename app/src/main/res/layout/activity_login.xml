@@ -9,6 +9,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/fondo_app">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -16,11 +17,13 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="24dp">
+
         <ImageView
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@drawable/logo_fitness"
             android:translationY="-50dp"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +44,8 @@
         android:textColor="@color/texto_home"
         android:textSize="20dp"
         android:translationY="-10dp"/>
-<LinearLayout
+
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1"
@@ -51,6 +55,7 @@
     android:padding="20dp">
 
     <EditText
+        android:id="@+id/txtEmail"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/campo_textologin"
@@ -60,7 +65,9 @@
         android:drawablePadding="10dp"
         android:paddingHorizontal="12dp"
         android:layout_marginBottom="20dp"/>
+
     <EditText
+        android:id="@+id/txtPass"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/campo_textologin"
@@ -70,6 +77,7 @@
         android:drawablePadding="10dp"
         android:paddingHorizontal="12dp"
         android:layout_marginBottom="20dp"/>
+
     <Button
         android:id="@+id/btnIniciarSesion"
         android:layout_width="match_parent"
