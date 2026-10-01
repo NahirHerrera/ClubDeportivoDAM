@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -14,9 +15,10 @@ class LoginActivity : AppCompatActivity() {
 
         val txtEmail = findViewById<EditText>(R.id.txtEmail)
         val txtPassword = findViewById<EditText>(R.id.txtPass)
-        val btnLogin = findViewById<Button>(R.id.btnIniciarSesion)
+        val btnIniciarSesion = findViewById<Button>(R.id.btnIniciarSesion)
+        val txtOlvidePassword = findViewById<TextView>(R.id.txtOlvidePassword)
 
-        btnLogin.setOnClickListener {
+        btnIniciarSesion.setOnClickListener {
             val email = txtEmail.text.toString().trim()
             val password = txtPassword.text.toString().trim()
 
@@ -32,12 +34,22 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val btnIniciarSesion = findViewById<Button>(R.id.btnIniciarSesion)
-            btnIniciarSesion.setOnClickListener {
-                Toast.makeText(this, "Campos correctos. Iniciando sesión...", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
+            Toast.makeText(this, "Datos correctos. Iniciando sesion...", Toast.LENGTH_LONG
+            ).show()
+            startActivity(Intent(this, HomeActivity::class.java))
+
+                txtOlvidePassword.setOnClickListener {
+                    val email = txtEmail.text.toString().trim()
+
+                    // 1. Validamos que el usuario haya escrito su correo primero
+                    if (email.isEmpty()) {
+                        txtEmail.error = "Por favor, ingresa tu correo para recuperar tu contraseña"
+                        txtEmail.requestFocus()
+                        return@setOnClickListener
+                    }
+                    Toast.makeText(this, "Se ha enviado un enlace de recuperación a: $email", Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }
-}
