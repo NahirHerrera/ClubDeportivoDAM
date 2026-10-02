@@ -28,6 +28,13 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".CobrarCuotaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ListadoClientesActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegistrarClienteActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
