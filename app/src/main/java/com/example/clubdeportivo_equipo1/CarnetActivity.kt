@@ -8,6 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import android.widget.ImageView
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.journeyapps.barcodescanner.BarcodeEncoder
 
 class CarnetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +32,28 @@ class CarnetActivity : AppCompatActivity() {
             val vigente = aptoVigente(socio.aptoFisicoFecha)
             findViewById<TextView>(R.id.apto_fisico).text =
                 if (vigente) "APTO FISICO: VIGENTE" else "APTO FISICO: VENCIDO"
-            findViewById<TextView>(R.id.apto_fisico_vencimiento).text = "Presentado: ${socio.aptoFisicoFecha}"
+            findViewById<TextView>(R.id.apto_fisico_vencimiento).text =
+                "Presentado: ${socio.aptoFisicoFecha}"
         }
+
+        //QR
+        val img_qr = findViewById<ImageView>(R.id.img_qr)
+        val numeroSocio = "0001"
+        val writer = MultiFormatWriter()
+        val matrix = writer.encode(
+            numeroSocio,
+            BarcodeFormat.QR_CODE,
+            300,
+            300
+        )
+        val encoder = BarcodeEncoder()
+        val bitmap = encoder.createBitmap(matrix)
+
+        img_qr.setImageBitmap(bitmap)
+
         findViewById<Button>(R.id.btnVolver).setOnClickListener { finish() }
     }
+
     private fun aptoVigente(fechaInscripcion: String): Boolean {
         val vence = Calendar.getInstance().apply {
             time = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fechaInscripcion)!!
