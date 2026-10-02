@@ -10,7 +10,8 @@ data class Socio(
     val fechaInscripcion: String,
     val tipoCliente: String = "Socio",
     // Se completa desde el menú Actividad (solo si tiene la cuota al día)
-    val actividades: MutableList<String> = mutableListOf()
+    val actividades: MutableList<String> = mutableListOf(),
+    var aptoFisicoFecha: String = fechaInscripcion
 ) {
     val nombreCompleto: String
         get() = "$nombre $apellido"

@@ -63,7 +63,7 @@ class ListadoClientesActivity : AppCompatActivity() {
         }
         if (socio == null || !socio.activo || !socio.cuotaAlDia) return
 
-        val item = layoutInflater.inflate(R.layout.item_cliente, contenedor, false)
+        val item = layoutInflater.inflate(R.layout.activity_item_cliente, contenedor, false)
         item.findViewById<TextView>(R.id.tvIdCliente).text = "ID Cliente: ${socio.numeroFormateado}"
         item.findViewById<TextView>(R.id.tvTipoCliente).text = socio.tipoCliente
         item.findViewById<TextView>(R.id.tvNombre).text = socio.nombreCompleto

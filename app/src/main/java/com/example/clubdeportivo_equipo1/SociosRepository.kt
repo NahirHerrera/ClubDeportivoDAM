@@ -1,5 +1,9 @@
 package com.example.clubdeportivo_equipo1
 
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
+
 // Datos de prueba en memoria hasta que se conecte la base de datos
 object SociosRepository {
 
@@ -30,6 +34,11 @@ object SociosRepository {
         socio.cuotaAlDia = true
         ultimoComprobante++
         return ultimoComprobante
+    }
+
+    fun renovarApto(dni: String) {
+        buscarPorDni(dni)?. aptoFisicoFecha =
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
     }
 
     // ENDPOINT ABIERTO - lo va a usar el menú Actividad para inscribir al cliente.
