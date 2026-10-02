@@ -19,6 +19,10 @@ class HomeActivity : AppCompatActivity() {
             insets
         }
 
+        findViewById<Button>(R.id.btnRegistrarCliente).setOnClickListener {
+            startActivity(Intent(this, RegistrarClienteActivity::class.java))
+        }
+
         findViewById<Button>(R.id.btnCobrarCuota).setOnClickListener {
             startActivity(Intent(this, CobrarCuotaActivity::class.java))
         }

@@ -53,7 +53,6 @@ class CarnetActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnVolver).setOnClickListener { finish() }
     }
-
     private fun aptoVigente(fechaInscripcion: String): Boolean {
         val vence = Calendar.getInstance().apply {
             time = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fechaInscripcion)!!
