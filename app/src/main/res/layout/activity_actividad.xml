@@ -12,7 +12,7 @@
         android:id="@+id/Actividad"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/fondo"
+        android:background="@drawable/fondo_app"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="24dp"
