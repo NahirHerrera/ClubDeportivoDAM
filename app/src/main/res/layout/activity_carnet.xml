@@ -2,6 +2,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/carnet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -45,16 +46,16 @@
                 android:id="@+id/apto_fisico"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="APTO FISICO"
+                tools:text="APTO FISICO: VIGENTE"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/Vencimiento"
+                android:id="@+id/apto_fisico_vencimiento"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Vencimiento: 31/03/2027"
+                tools:text="Presentado: 15/03/2025"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -80,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="JUAN PEREZ"
+            tools:text="JUAN PEREZ"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -89,21 +90,21 @@
             android:id="@+id/Socio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="N° Socio: 0001"
+            tools:text="N° Socio: 0001"
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/Dni"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="DNI: 26.298.456"
+            tools:text="DNI: 26.298.456"
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/Vigencia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vigencia: ACTIVO"
+            tools:text="Vigencia: ACTIVO"
             android:textColor="@color/black" />
     </LinearLayout>
 
@@ -114,7 +115,7 @@
         android:layout_marginTop="16dp"
         android:background="@color/white"
         android:padding="8dp"
-        android:src="@drawable/qr_socio"
+        tools:src="@drawable/qr_socio"
         android:layout_marginBottom="20dp"/>
     <Button
         android:id="@+id/btnVolver"
