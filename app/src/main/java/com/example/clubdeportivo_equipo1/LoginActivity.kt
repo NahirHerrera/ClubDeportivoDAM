@@ -18,23 +18,12 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         // Referencias a los elementos del XML
+
         val txtEmail = findViewById<EditText>(R.id.txtEmail)
         val txtPassword = findViewById<EditText>(R.id.txtPass)
         val btnIniciarSesion = findViewById<Button>(R.id.btnIniciarSesion)
         val txtOlvidePassword = findViewById<TextView>(R.id.txtOlvidePassword)
 
-        txtPassword.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_UP && event.x <= txtPassword.compoundPaddingStart) {
-                val visible = txtPassword.transformationMethod == null
-                txtPassword.transformationMethod =
-                    if (visible) PasswordTransformationMethod.getInstance() else null
-                txtPassword.setSelection(txtPassword.text.length)
-                v.performClick()
-            }
-            false
-        }
-
-        // Botón Iniciar Sesión
         btnIniciarSesion.setOnClickListener {
 
             val email = txtEmail.text.toString().trim()
@@ -42,14 +31,12 @@ class LoginActivity : AppCompatActivity() {
 
             when {
 
-                // VALIDACIÓN DEL EMAIL
                 !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
                     txtEmail.error =
                         "Ingresá un correo válido (ej: nombre@gmail.com)"
                     txtEmail.requestFocus()
                 }
 
-                // VALIDACIÓN DE CONTRASEÑA
                 password.length < 6 -> {
                     txtPassword.error =
                         "La contraseña debe tener al menos 6 caracteres"
@@ -74,13 +61,23 @@ class LoginActivity : AppCompatActivity() {
                     txtPassword.requestFocus()
                 }
 
-                // TODO ESTÁ CORRECTO
                 else -> {
                     Toast.makeText(
                         this,
                         "Datos correctos. Iniciando sesión...",
                         Toast.LENGTH_LONG
                     ).show()
+
+                    txtPassword.setOnTouchListener { v, event ->
+                        if (event.action == MotionEvent.ACTION_UP && event.x <= txtPassword.compoundPaddingStart) {
+                            val visible = txtPassword.transformationMethod == null
+                            txtPassword.transformationMethod =
+                                if (visible) PasswordTransformationMethod.getInstance() else null
+                            txtPassword.setSelection(txtPassword.text.length)
+                            v.performClick()
+                        }
+                        false
+                    }
 
                     startActivity(
                         Intent(this, HomeActivity::class.java)
@@ -103,7 +100,6 @@ class LoginActivity : AppCompatActivity() {
 
                 return@setOnClickListener
             }
-
             Toast.makeText(
                 this,
                 "Se ha enviado un enlace de recuperación a: $email",
