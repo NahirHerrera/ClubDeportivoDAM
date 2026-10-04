@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ClubDeportivo_Equipo1</string>
+    <string-array name="tipoRegistraCliente">
+        <item>DNI</item>
+        <item>CUIT</item>
+    </string-array>
 </resources>
