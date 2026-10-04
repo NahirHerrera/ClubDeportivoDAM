@@ -47,9 +47,10 @@ class ActividadActivity : AppCompatActivity() {
                     R.id.rbTarjeta6 -> { /* 6 cuotas */ }
                     -1 -> Toast.makeText(this, "Elegí una forma de pago", Toast.LENGTH_SHORT).show()
                 }
-                if (rgFormaPago.checkedRadioButtonId != -1)
+                if (rgFormaPago.checkedRadioButtonId != -1) {
                     Toast.makeText(this, "Pago realizado", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
+                }
             }
 
             vista.findViewById<Button>(R.id.btnCancelarPago).setOnClickListener {

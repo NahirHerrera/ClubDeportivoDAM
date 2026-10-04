@@ -38,7 +38,7 @@ class CarnetActivity : AppCompatActivity() {
 
         //QR
         val img_qr = findViewById<ImageView>(R.id.img_qr)
-        val numeroSocio = "0001"
+        val numeroSocio = socio?.numeroFormateado ?: "0001"
         val writer = MultiFormatWriter()
         val matrix = writer.encode(
             numeroSocio,
