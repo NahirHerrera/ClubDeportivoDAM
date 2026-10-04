@@ -3,6 +3,8 @@ package com.example.clubdeportivo_equipo1
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -30,5 +32,16 @@ class HomeActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnListadoDeClientes).setOnClickListener {
             startActivity(Intent(this, ListadoClientesActivity::class.java))
         }
+
+        findViewById<Button>(R.id.btnActividad).setOnClickListener {
+            startActivity(Intent(this, ActividadActivity::class.java))
+        }
+
+        findViewById<TextView>(R.id.tvCerrarSesion).setOnClickListener {
+            Toast.makeText(this, "Cerrando Sesión...", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LoginActivity::class.java))
+
+        }
+
     }
 }
