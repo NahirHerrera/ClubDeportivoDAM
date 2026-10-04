@@ -43,11 +43,11 @@ class ComprobanteActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvFecha).text =
             "Fecha: $fecha"
 
-        findViewById<TextView>(R.id.tvSocio).text =
-            "Socio: $nombre"
-
-        findViewById<TextView>(R.id.tvNumeroSocio).text =
+        findViewById<TextView>(R.id.tvNroSocio).text =
             "N° Socio: $numeroSocio"
+
+        findViewById<TextView>(R.id.tvNombre).text =
+            "Socio: $nombre"
 
         findViewById<TextView>(R.id.tvDni).text =
             "DNI: $dni"

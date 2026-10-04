@@ -48,4 +48,6 @@ object SociosRepository {
         if (actividad !in socio.actividades) socio.actividades.add(actividad)
         return true
     }
+
+    fun deudores(): List<Socio> = socios.filter { it.activo && !it.cuotaAlDia }
 }

@@ -33,6 +33,10 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, ListadoClientesActivity::class.java))
         }
 
+        findViewById<Button>(R.id.btnListadoDeDeudores).setOnClickListener {
+            startActivity(Intent(this, ListadoDeudoresActivity::class.java))
+        }
+
         findViewById<Button>(R.id.btnActividad).setOnClickListener {
             startActivity(Intent(this, ActividadActivity::class.java))
         }

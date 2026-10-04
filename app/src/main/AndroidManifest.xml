@@ -35,19 +35,11 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".CobrarCuotaActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".CarnetActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ActividadActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ListadoClientesActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -60,10 +52,6 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ComprobantePagoActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ActividadActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>

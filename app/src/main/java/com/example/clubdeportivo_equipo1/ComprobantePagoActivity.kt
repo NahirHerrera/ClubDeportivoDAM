@@ -37,7 +37,7 @@ class ComprobantePagoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_comprobante_pago)
+        setContentView(R.layout.activity_comprobante)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -60,8 +60,6 @@ class ComprobantePagoActivity : AppCompatActivity() {
             SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
         findViewById<TextView>(R.id.tvNombre).text = socio.nombre.uppercase()
         findViewById<TextView>(R.id.tvApellido).text = socio.apellido.uppercase()
-        findViewById<TextView>(R.id.tvActividad).text =
-            if (actividades.isEmpty()) "-" else actividades.joinToString(", ").uppercase()
         findViewById<TextView>(R.id.tvMedioPago).text = medioPago
         findViewById<TextView>(R.id.tvTotal).text = formatoMoneda.format(monto)
 
