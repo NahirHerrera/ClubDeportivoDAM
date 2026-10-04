@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class CobrarCuotaActivity : AppCompatActivity() {
@@ -173,15 +175,20 @@ class CobrarCuotaActivity : AppCompatActivity() {
         mostrarCarnet(socio)
     }
 
-    // ENDPOINT ABIERTO - Comprobante de pago.
-    // TODO: conectar con la pantalla de comprobante que desarrolla otro integrante del equipo.
-    // Recibe todos los datos del pago para que el comprobante los pueda mostrar.
+    // Comprobante de pago de la cuota: abre ComprobanteActivity con los datos del pago
     private fun mostrarComprobante(socio: Socio, medioPago: String, monto: Double, nroComprobante: Int) {
-        Toast.makeText(
-            this,
-            "Comprobante N° $nroComprobante (${formatoMoneda.format(monto)}): pendiente de integración",
-            Toast.LENGTH_LONG
-        ).show()
+        val fecha = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+        val intent = Intent(this, ComprobanteActivity::class.java).apply {
+            putExtra(ComprobanteActivity.EXTRA_NOMBRE, socio.nombre.uppercase())
+            putExtra(ComprobanteActivity.EXTRA_APELLIDO, socio.apellido.uppercase())
+            putExtra(ComprobanteActivity.EXTRA_NUMERO_SOCIO, socio.numeroFormateado)
+            putExtra(ComprobanteActivity.EXTRA_DNI, socio.dniFormateado)
+            putExtra(ComprobanteActivity.EXTRA_MEDIO_PAGO, medioPago)
+            putExtra(ComprobanteActivity.EXTRA_MONTO, monto)
+            putExtra(ComprobanteActivity.EXTRA_NUMERO_COMPROBANTE, nroComprobante)
+            putExtra(ComprobanteActivity.EXTRA_FECHA, fecha)
+        }
+        startActivity(intent)
     }
 
     // ENDPOINT ABIERTO - Carnet del socio.

@@ -12,6 +12,7 @@ class ComprobanteActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_NOMBRE = "extra_nombre"
+        const val EXTRA_APELLIDO = "extra_apellido"
         const val EXTRA_NUMERO_SOCIO = "extra_numero_socio"
         const val EXTRA_DNI = "extra_dni"
         const val EXTRA_MEDIO_PAGO = "extra_medio_pago"
@@ -29,6 +30,7 @@ class ComprobanteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_comprobante)
 
         val nombre = intent.getStringExtra(EXTRA_NOMBRE) ?: ""
+        val apellido = intent.getStringExtra(EXTRA_APELLIDO) ?: ""
         val numeroSocio = intent.getStringExtra(EXTRA_NUMERO_SOCIO) ?: ""
         val dni = intent.getStringExtra(EXTRA_DNI) ?: ""
         val medioPago = intent.getStringExtra(EXTRA_MEDIO_PAGO) ?: ""
@@ -37,29 +39,26 @@ class ComprobanteActivity : AppCompatActivity() {
             intent.getIntExtra(EXTRA_NUMERO_COMPROBANTE, 0)
         val fecha = intent.getStringExtra(EXTRA_FECHA) ?: ""
 
+        // Los rótulos ("N° Comprobante:", "Nombre:", etc.) ya están en el layout
         findViewById<TextView>(R.id.tvNumeroComprobante).text =
-            "Comprobante N°: $numeroComprobante"
+            numeroComprobante.toString()
 
-        findViewById<TextView>(R.id.tvFecha).text =
-            "Fecha: $fecha"
+        findViewById<TextView>(R.id.tvFecha).text = fecha
 
-        findViewById<TextView>(R.id.tvNroSocio).text =
-            "N° Socio: $numeroSocio"
+        findViewById<TextView>(R.id.tvNroSocio).text = numeroSocio
 
-        findViewById<TextView>(R.id.tvNombre).text =
-            "Socio: $nombre"
+        findViewById<TextView>(R.id.tvNombre).text = nombre
 
-        findViewById<TextView>(R.id.tvDni).text =
-            "DNI: $dni"
+        findViewById<TextView>(R.id.tvApellido).text = apellido
 
-        findViewById<TextView>(R.id.tvConcepto).text =
-            "Concepto: Cuota mensual"
+        findViewById<TextView>(R.id.tvDni).text = dni
 
-        findViewById<TextView>(R.id.tvMedioPago).text =
-            "Medio de pago: $medioPago"
+        findViewById<TextView>(R.id.tvConcepto).text = "Cuota mensual"
+
+        findViewById<TextView>(R.id.tvMedioPago).text = medioPago
 
         findViewById<TextView>(R.id.tvTotal).text =
-            "Total abonado: ${formatoMoneda.format(monto)}"
+            formatoMoneda.format(monto)
 
         findViewById<Button>(R.id.btnVolver).setOnClickListener {
             finish()
