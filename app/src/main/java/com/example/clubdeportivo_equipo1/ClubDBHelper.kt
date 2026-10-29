@@ -27,6 +27,8 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
             )""".trimIndent()
         )
 
+        db.execSQL("INSERT INTO Usuarios(Usuario, Password, idRol) VALUES ('admin', '1234', 1), ('empleado', '1234', 2)")
+
         db.execSQL(
             """CREATE TABLE clientes(
                 idCliente INTEGER PRIMARY KEY AUTOINCREMENT,
