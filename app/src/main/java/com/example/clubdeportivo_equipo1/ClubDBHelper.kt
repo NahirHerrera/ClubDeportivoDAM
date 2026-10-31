@@ -27,7 +27,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
             )""".trimIndent()
         )
 
-        db.execSQL("INSERT INTO Usuarios(Usuario, Password, idRol) VALUES ('admin@fitnesscenter.com', '1234', 1), ('empleado@fitnesscenter.com', '1234', 2)")
+        db.execSQL("INSERT INTO Usuarios(Usuario, Password, idRol) VALUES ('admin@fitnesscenter.com', 'Club1234', 1), ('empleado@fitnesscenter.com', 'Club1234', 2)")
 
         db.execSQL(
             """CREATE TABLE clientes(
@@ -60,7 +60,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         db.execSQL(
             """CREATE TABLE nosocios(
                 idCliente INTEGER PRIMARY KEY,
-                idActividades INTEGER NOT NULL,
+                idActividad INTEGER NOT NULL,
                 fechaActividad TEXT NOT NULL,
                 FOREIGN KEY (idCliente) REFERENCES clientes(idCliente),
                 FOREIGN KEY (idActividad) REFERENCES actividades(idActividad)
@@ -72,7 +72,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
                 idInscripcion INTEGER PRIMARY KEY AUTOINCREMENT,
                 idCliente INTEGER NOT NULL,
                 fecha TEXT NOT NULL,
-                FOREIGN KEY (idCliente) REFERENCES cliente(idCliente)
+                FOREIGN KEY (idCliente) REFERENCES clientes(idCliente)
                 )""".trimIndent()
         )
 
@@ -105,7 +105,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
             idCarnet INTEGER PRIMARY KEY AUTOINCREMENT,
             nroCarnet INTEGER NOT NULL,
             fechaEmision TEXT NOT NULL,
-            idClientes INTEGER NOT NULL,
+            idCliente INTEGER NOT NULL,
             FOREIGN KEY (idCliente) REFERENCES clientes(idCliente)
             )""".trimIndent()
         )
@@ -118,9 +118,9 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
             formaPago TEXT NOT NULL,
             monto REAL NOT NULL,
             fechaInscripcion TEXT NOT NULL,
-            FOREIGN KEY (idCliente) REFERENCES cliente(idCliente),
+            FOREIGN KEY (idCliente) REFERENCES clientes(idCliente),
             FOREIGN KEY (idActividad) REFERENCES actividades(idActividad),
-            UNIQUE (idClientes, idActividad)
+            UNIQUE (idCliente, idActividad)
             )""".trimIndent()
         )
     }
