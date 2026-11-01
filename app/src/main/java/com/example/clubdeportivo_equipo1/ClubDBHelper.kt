@@ -3,6 +3,8 @@ package com.example.clubdeportivo_equipo1
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.content.ContentValues
+
 
 class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null, 1) {
 
@@ -126,10 +128,75 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        listOf(
-            "inscripcion_actividad", "carnet", "pagos", "cuota", "inscripcion",
-            "nosocios", "actividades", "socios", "clientes", "usuarios", "roles", "socios"
-        ).forEach { db.execSQL("DROP TABLE IF EXISTS $it") }
-        onCreate(db)
+        TODO("Not get implemented")
     }
+
+
+    // ---------- Login para administrador y empleado de Fitness Center -------
+
+    fun validarLogin(usuario: String, password: String): String? =
+        readableDatabase.rawQuery(
+            """SELECT r.nombreRol
+           FROM usuarios u
+           JOIN roles r ON r.idRol = u.idRol
+           WHERE u.usuario = ? AND u.password = ?""",
+            arrayOf(usuario, password)
+        ).use { if (it.moveToFirst()) it.getString(0) else null }
+
+    // ---------- Listado de clientes (Nahir) ----------
+
+    fun listarClientes(dni: String): List<ClienteListado> {
+        val lista = mutableListOf<ClienteListado>()
+        readableDatabase.rawQuery(
+            """SELECT c.idCliente,
+                  CASE WHEN s.idCliente IS NOT NULL THEN 'Socio' ELSE 'No socio' END,
+                  c.nombre, c.apellido, c.dni,
+                  MIN(i.fechaInscripcion),
+                  GROUP_CONCAT(a.nombreActividad, char(10))
+           FROM clientes c
+           LEFT JOIN socios s ON s.idCliente = c.idCliente
+           LEFT JOIN inscripcion_actividad i ON i.idCliente = c.idCliente
+           LEFT JOIN actividades a ON a.idActividad = i.idActividad
+           WHERE c.dni LIKE ?
+             AND (s.idCliente IS NULL OR s.fecha_vencimiento_cuota >= date('now'))
+           GROUP BY c.idCliente
+           ORDER BY c.apellido, c.nombre""", arrayOf("$dni%")
+        ).use { c ->
+            while (c.moveToNext()) lista.add(
+                ClienteListado(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6))
+            )
+        }
+        return lista
+    }
+
+    fun insertarCliente(nombre: String, apellido: String, tipoDoc: String, dni: String): Long =
+        writableDatabase.insert("clientes", null, ContentValues().apply {
+            put("nombre", nombre)
+            put("apellido", apellido)
+            put("tipoDoc", tipoDoc)
+            put("dni", dni)
+        })
+
+    fun insertarSocio(idCliente: Int, nroCarnet: Int, vencimiento: String): Long =
+        writableDatabase.insert("socios", null, ContentValues().apply {
+            put("idCliente", idCliente)
+            put("nroCarnet", nroCarnet)
+            put("fecha_vencimiento_cuota", vencimiento)
+        })
+
+    fun insertarActividad(nombre: String, costo: Double): Long =
+        writableDatabase.insert("actividades", null, ContentValues().apply {
+            put("nombreActividad", nombre)
+            put("costo_pase_diario", costo)
+        })
+
+    fun inscribir(idCliente: Int, idActividad: Int, formaPago: String, monto: Double, fecha: String): Long =
+        writableDatabase.insert("inscripcion_actividad", null, ContentValues().apply {
+            put("idCliente", idCliente)
+            put("idActividad", idActividad)
+            put("formaPago", formaPago)
+            put("monto", monto)
+            put("fechaInscripcion", fecha)
+        })
+
 }

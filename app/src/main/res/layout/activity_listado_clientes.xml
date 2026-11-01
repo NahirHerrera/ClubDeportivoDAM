@@ -76,7 +76,7 @@
 
         <TextView
             android:id="@+id/tvMensaje"
-            android:text="Ingresá el DNI del cliente para ver sus actividades"
+            android:text="Listado de clientes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/campos_login"
@@ -84,18 +84,12 @@
             android:layout_marginStart="4dp"
             android:layout_marginBottom="10dp"/>
 
-        <ScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvClientes"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginBottom="12dp">
-
-            <LinearLayout
-                android:id="@+id/contenedorClientes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"/>
-        </ScrollView>
+            android:layout_marginBottom="12dp"/>
 
         <Button
             android:id="@+id/btnVolver"

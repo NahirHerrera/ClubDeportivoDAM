@@ -21,6 +21,9 @@ class HomeActivity : AppCompatActivity() {
             insets
         }
 
+        findViewById<TextView>(R.id.tvSesion).text =
+            "${intent.getStringExtra("rol")}"
+
         findViewById<Button>(R.id.btnRegistrarCliente).setOnClickListener {
             startActivity(Intent(this, RegistrarClienteActivity::class.java))
         }

@@ -13,16 +13,29 @@ import androidx.appcompat.app.AppCompatActivity
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var db: ClubDBHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Referencias a los elementos del XML
+        db = ClubDBHelper(this)
 
         val txtEmail = findViewById<EditText>(R.id.txtEmail)
         val txtPassword = findViewById<EditText>(R.id.txtPass)
         val btnIniciarSesion = findViewById<Button>(R.id.btnIniciarSesion)
         val txtOlvidePassword = findViewById<TextView>(R.id.txtOlvidePassword)
+
+        txtPassword.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP && event.x <= txtPassword.compoundPaddingStart) {
+                val visible = txtPassword.transformationMethod == null
+                txtPassword.transformationMethod =
+                    if (visible) PasswordTransformationMethod.getInstance() else null
+                txtPassword.setSelection(txtPassword.text.length)
+                v.performClick()
+            }
+            false
+        }
 
         btnIniciarSesion.setOnClickListener {
 
@@ -32,72 +45,53 @@ class LoginActivity : AppCompatActivity() {
             when {
 
                 !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                    txtEmail.error =
-                        "Ingresá un correo válido (ej: nombre@gmail.com)"
+                    txtEmail.error = "Ingresá un correo válido (ej: nombre@gmail.com)"
                     txtEmail.requestFocus()
                 }
 
                 password.length < 6 -> {
-                    txtPassword.error =
-                        "La contraseña debe tener al menos 6 caracteres"
+                    txtPassword.error = "La contraseña debe tener al menos 6 caracteres"
                     txtPassword.requestFocus()
                 }
 
                 !password.any { it.isUpperCase() } -> {
-                    txtPassword.error =
-                        "La contraseña debe tener al menos una mayúscula"
+                    txtPassword.error = "La contraseña debe tener al menos una mayúscula"
                     txtPassword.requestFocus()
                 }
 
                 !password.any { it.isLowerCase() } -> {
-                    txtPassword.error =
-                        "La contraseña debe tener al menos una minúscula"
+                    txtPassword.error = "La contraseña debe tener al menos una minúscula"
                     txtPassword.requestFocus()
                 }
 
                 !password.any { it.isDigit() } -> {
-                    txtPassword.error =
-                        "La contraseña debe tener al menos un número"
+                    txtPassword.error = "La contraseña debe tener al menos un número"
                     txtPassword.requestFocus()
                 }
 
                 else -> {
-                    Toast.makeText(
-                        this,
-                        "Datos correctos. Iniciando sesión...",
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                    txtPassword.setOnTouchListener { v, event ->
-                        if (event.action == MotionEvent.ACTION_UP && event.x <= txtPassword.compoundPaddingStart) {
-                            val visible = txtPassword.transformationMethod == null
-                            txtPassword.transformationMethod =
-                                if (visible) PasswordTransformationMethod.getInstance() else null
-                            txtPassword.setSelection(txtPassword.text.length)
-                            v.performClick()
-                        }
-                        false
+                    val rol = db.validarLogin(email, password)
+                    if (rol == null) {
+                        Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(this, "Bienvenido/a, $rol", Toast.LENGTH_LONG).show()
+                        startActivity(
+                            Intent(this, HomeActivity::class.java)
+                                .putExtra("usuario", email)
+                                .putExtra("rol", rol)
+                        )
                     }
-
-                    startActivity(
-                        Intent(this, HomeActivity::class.java)
-                    )
                 }
             }
         }
 
-        // Botón "Olvidé mi contraseña"
         txtOlvidePassword.setOnClickListener {
 
             val email = txtEmail.text.toString().trim()
 
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-
-                txtEmail.error =
-                    "Por favor, ingresá tu correo para recuperar tu contraseña"
-
+                txtEmail.error = "Por favor, ingresá tu correo para recuperar tu contraseña"
                 txtEmail.requestFocus()
-
                 return@setOnClickListener
             }
             Toast.makeText(

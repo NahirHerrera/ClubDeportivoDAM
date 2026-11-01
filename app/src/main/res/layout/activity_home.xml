@@ -7,22 +7,28 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="24dp"
         android:orientation="vertical"
-        android:gravity="center"
         android:background="@drawable/fondo_app">
+
+        <TextView
+            android:id="@+id/tvSesion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/white"
+            android:textSize="13sp"/>
 
         <ImageView
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/logo_fitness"
-            />
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/logo_fitness"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -32,83 +38,85 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:fontFamily="@font/letra_marca"
-            android:layout_marginBottom="40dp"/>
+            android:layout_marginBottom="24dp"/>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-
-            <Button
-                android:id="@+id/btnRegistrarCliente"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Registrar Cliente"
-                android:backgroundTint="@color/botones"
-                android:textColor="@color/black"
-                android:layout_marginBottom="30dp"
-
-                />
-
-            <Button
-                android:id="@+id/btnCobrarCuota"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Cobrar Cuota"
-                android:backgroundTint="@color/botones"
-                android:textColor="@color/black"
-                android:layout_marginBottom="30dp" />
-
-            <Button
-                android:id="@+id/btnActividad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Actividad"
-                android:backgroundTint="@color/botones"
-                android:textColor="@color/black"
-                android:layout_marginBottom="30dp" />
-
-            <Button
-                android:id="@+id/btnListadoDeDeudores"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Emitir Listado de Deudores"
-                android:backgroundTint="@color/botones"
-                android:textColor="@color/black"
-                android:layout_marginBottom="30dp" />
-
-            <Button
-                android:id="@+id/btnListadoDeClientes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Emitir Listado de Clientes"
-                android:backgroundTint="@color/botones"
-                android:textColor="@color/black"
-                android:layout_marginBottom="100dp" />
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/img_logout"/>
-
-                <TextView
-                    android:id="@+id/tvCerrarSesion"
+                <Button
+                    android:id="@+id/btnRegistrarCliente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:translationY="5dp"
-                    android:text="Cerrar sesión"
-                    android:textColor="@color/texto_home"/>
+                    android:text="Registrar Cliente"
+                    android:backgroundTint="@color/botones"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="16dp"/>
 
+                <Button
+                    android:id="@+id/btnCobrarCuota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cobrar Cuota"
+                    android:backgroundTint="@color/botones"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="16dp"/>
+
+                <Button
+                    android:id="@+id/btnActividad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Actividad"
+                    android:backgroundTint="@color/botones"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="16dp"/>
+
+                <Button
+                    android:id="@+id/btnListadoDeDeudores"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Emitir Listado de Deudores"
+                    android:backgroundTint="@color/botones"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="16dp"/>
+
+                <Button
+                    android:id="@+id/btnListadoDeClientes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Emitir Listado de Clientes"
+                    android:backgroundTint="@color/botones"
+                    android:textColor="@color/black"/>
             </LinearLayout>
+        </ScrollView>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/img_logout"/>
+
+            <TextView
+                android:id="@+id/tvCerrarSesion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Cerrar sesión"
+                android:textColor="@color/texto_home"/>
         </LinearLayout>
 
     </LinearLayout>
