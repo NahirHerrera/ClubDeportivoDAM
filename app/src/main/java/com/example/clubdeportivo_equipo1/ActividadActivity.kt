@@ -79,8 +79,18 @@ class ActividadActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    Toast.makeText(this, "Buscando persona...", Toast.LENGTH_SHORT).show()
+                    val dbHelper = ClubDBHelper(this)
+
+                    val nombre = dbHelper.buscarCliente(documento)
+
+                    if(nombre != null){
+                        Toast.makeText(this, "Cliente encontrado: $nombre", Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        Toast.makeText(this, "Cliente no encontrado", Toast.LENGTH_SHORT).show()
+                    }
                     // documento válido: hacer la búsqueda
+
                 }
             }
         }

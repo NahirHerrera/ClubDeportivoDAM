@@ -59,6 +59,8 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
             )""".trimIndent()
         )
 
+        db.execSQL("INSERT INTO actividades(nombreActividad, costo_pase_diario) VALUES ('Spinnig', 10000), ('Natacion', 15000), ('Yoga', 12000),('Zumba', 8000)")
+
         db.execSQL(
             """CREATE TABLE nosocios(
                 idCliente INTEGER PRIMARY KEY,
@@ -190,13 +192,58 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
             put("costo_pase_diario", costo)
         })
 
-    fun inscribir(idCliente: Int, idActividad: Int, formaPago: String, monto: Double, fecha: String): Long =
-        writableDatabase.insert("inscripcion_actividad", null, ContentValues().apply {
+    fun inscribir(idCliente: Int, idActividad: Int, formaPago: String, monto: Double, fecha: String): Long {
+        val db = writableDatabase
+
+        val valores = ContentValues().apply {
             put("idCliente", idCliente)
             put("idActividad", idActividad)
             put("formaPago", formaPago)
             put("monto", monto)
             put("fechaInscripcion", fecha)
-        })
+        }
+
+        val resultado = db.insert("inscripcion_actividad", null, valores)
+        db.close()
+        return resultado
+    }
+
+    fun obtenerActividades(): MutableList<Actividades>{
+        val lista = mutableListOf<Actividades>()
+        val db = readableDatabase
+
+        val cursor = db.rawQuery("SELECT idActividad, nombreActividad, costo_pase_diario FROM actividades ORDER BY id DESC", null)
+
+        cursor.use{
+            while(it.moveToNext()){
+                    lista.add(Actividades(
+                        Id = it.getInt(0),
+                        nombre = it.getString(1),
+                        costo = it.getDouble(2)
+                        )
+                    )
+            }
+            db.close()
+            return lista
+        }
+
+    }
+
+    fun buscarCliente(dni: String): String? {
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT nombre, apellido FROM clientes WHERE dni = ?", arrayOf(dni))
+
+
+        var resultado: String? = null
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                resultado = "${it.getString(0)} ${it.getString(1)}"
+            }
+        }
+
+        db.close()
+        return resultado
+    }
 
 }
