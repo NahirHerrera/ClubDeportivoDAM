@@ -145,52 +145,49 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
 
     // ---------- Listado de clientes (Nahir) ----------
 
-    fun listarClientes(dni: String): List<ClienteListado> {
-        val lista = mutableListOf<ClienteListado>()
-        readableDatabase.rawQuery(
-            """SELECT c.idCliente,
-                  CASE WHEN s.idCliente IS NOT NULL THEN 'Socio' ELSE 'No socio' END,
-                  c.nombre, c.apellido, c.dni,
-                  MIN(i.fechaInscripcion),
-                  GROUP_CONCAT(a.nombreActividad, char(10))
-           FROM clientes c
-           LEFT JOIN socios s ON s.idCliente = c.idCliente
-           LEFT JOIN inscripcion_actividad i ON i.idCliente = c.idCliente
-           LEFT JOIN actividades a ON a.idActividad = i.idActividad
-           WHERE c.dni LIKE ?
-             AND (s.idCliente IS NULL OR s.fecha_vencimiento_cuota >= date('now'))
-           GROUP BY c.idCliente
-           ORDER BY c.apellido, c.nombre""", arrayOf("$dni%")
-        ).use { c ->
-            while (c.moveToNext()) lista.add(
-                ClienteListado(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6))
-            )
-        }
-        return lista
-    }
+    fun insertarCliente(nombre: String, apellido: String, tipoDoc: String, dni: String): Long {
+        val db = writableDatabase
 
-    fun insertarCliente(nombre: String, apellido: String, tipoDoc: String, dni: String): Long =
-        writableDatabase.insert("clientes", null, ContentValues().apply {
+        val valores = ContentValues().apply {
             put("nombre", nombre)
             put("apellido", apellido)
             put("tipoDoc", tipoDoc)
             put("dni", dni)
-        })
+        }
 
-    fun insertarSocio(idCliente: Int, nroCarnet: Int, vencimiento: String): Long =
-        writableDatabase.insert("socios", null, ContentValues().apply {
+        val resultado = db.insert("clientes", null, valores)
+        db.close()
+        return resultado
+    }
+
+    fun insertarSocio(idCliente: Int, nroCarnet: Int, vencimiento: String): Long {
+        val db = writableDatabase
+
+        val valores = ContentValues().apply {
             put("idCliente", idCliente)
             put("nroCarnet", nroCarnet)
             put("fecha_vencimiento_cuota", vencimiento)
-        })
+        }
 
-    fun insertarActividad(nombre: String, costo: Double): Long =
-        writableDatabase.insert("actividades", null, ContentValues().apply {
+        val resultado = db.insert("socios", null, valores)
+        db.close()
+        return resultado
+    }
+
+    fun insertarActividad(nombre: String, costo: Double): Long {
+        val db = writableDatabase
+
+        val valores = ContentValues().apply {
             put("nombreActividad", nombre)
             put("costo_pase_diario", costo)
-        })
+        }
 
-    fun inscribir(idCliente: Int, idActividad: Int, formaPago: String, monto: Double, fecha: String): Long {
+        val resultado = db.insert("actividades", null, valores)
+        db.close()
+        return resultado
+    }
+
+    fun inscribirActividad(idCliente: Int, idActividad: Int, formaPago: String, monto: Double, fecha: String): Long {
         val db = writableDatabase
 
         val valores = ContentValues().apply {
@@ -205,6 +202,39 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         db.close()
         return resultado
     }
+    fun listarClientes(dni: String): List<ClienteListado> {
+        val db = readableDatabase
+        val lista = mutableListOf<ClienteListado>()
+
+        val cursor = db.rawQuery(
+            """SELECT c.idCliente,
+              CASE WHEN s.idCliente IS NOT NULL THEN 'Socio' ELSE 'No socio' END,
+              c.nombre, c.apellido, c.dni,
+              MIN(i.fechaInscripcion),
+              GROUP_CONCAT(a.nombreActividad, char(10))
+       FROM clientes c
+       LEFT JOIN socios s ON s.idCliente = c.idCliente
+       LEFT JOIN inscripcion_actividad i ON i.idCliente = c.idCliente
+       LEFT JOIN actividades a ON a.idActividad = i.idActividad
+       WHERE c.dni LIKE ?
+         AND (s.idCliente IS NULL OR s.fecha_vencimiento_cuota >= date('now'))
+       GROUP BY c.idCliente
+       ORDER BY c.apellido, c.nombre""", arrayOf("$dni%")
+        )
+
+        while (cursor.moveToNext()) {
+            val cliente = ClienteListado(
+                cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6)
+            )
+            lista.add(cliente)
+        }
+
+        cursor.close()
+        return lista
+    }
+
+    // ---------- Actividades (Alex) ----------
 
     fun obtenerActividades(): MutableList<Actividades>{
         val lista = mutableListOf<Actividades>()

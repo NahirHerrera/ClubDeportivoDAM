@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
 class ListadoClientesActivity : AppCompatActivity() {
@@ -42,10 +43,10 @@ class ListadoClientesActivity : AppCompatActivity() {
         val idCli = db.insertarCliente("Lucía", "Pérez", "DNI", "40123456").toInt()
         db.insertarSocio(idCli, 1001, "2026-12-31")
         val idAct = db.insertarActividad("Musculación", 5000.0).toInt()
-        db.inscribir(idCli, idAct, "Efectivo", 5000.0, "2026-10-01")
+        db.inscribirActividad(idCli, idAct, "Efectivo", 5000.0, "2026-10-01")
 
         val idCli2 = db.insertarCliente("Martín", "Gómez", "DNI", "38111222").toInt()
-        db.inscribir(idCli2, idAct, "Efectivo", 5000.0, "2026-10-15")
+        db.inscribirActividad(idCli2, idAct, "Efectivo", 5000.0, "2026-10-15")
 
         buscarCliente()
         findViewById<Button>(R.id.btnBuscar).setOnClickListener { buscarCliente() }
