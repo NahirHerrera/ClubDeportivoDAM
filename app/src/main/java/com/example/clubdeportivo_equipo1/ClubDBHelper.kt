@@ -129,13 +129,11 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         )
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         TODO("Not get implemented")
     }
 
-
     // ---------- Login para administrador y empleado de Fitness Center -------
-
     fun validarLogin(usuario: String, password: String): String? =
         readableDatabase.rawQuery(
             """SELECT r.nombreRol
