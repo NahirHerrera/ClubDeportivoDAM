@@ -10,14 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
 class ListadoClientesActivity : AppCompatActivity() {
 
+    private lateinit var dbHelper: ClubDBHelper
     private lateinit var etBuscarDni: EditText
     private lateinit var tvMensaje: TextView
-    private lateinit var db: ClubDBHelper
     private val adapter = ListadoClientesAdapter(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +29,7 @@ class ListadoClientesActivity : AppCompatActivity() {
             insets
         }
 
-        db = ClubDBHelper(this)
+        dbHelper = ClubDBHelper(this)
         etBuscarDni = findViewById(R.id.etBuscarDni)
         tvMensaje = findViewById(R.id.tvMensaje)
 
@@ -39,16 +38,6 @@ class ListadoClientesActivity : AppCompatActivity() {
             adapter = this@ListadoClientesActivity.adapter
         }
 
-        // ---------- Listado de clientes (Datos de prueba) ----------
-        val idCli = db.insertarCliente("Lucía", "Pérez", "Socio", "40123456", true).toInt()
-        db.insertarSocio(idCli, 1001, "2026-12-31")
-        val idAct = db.insertarActividad("Musculación", 5000.0).toInt()
-        db.inscribirActividad(idCli, idAct, "Efectivo", 5000.0, "2026-10-01")
-
-        val idCli2 = db.insertarCliente("Martín", "Gómez", "No socio", "38111222", false).toInt()
-        db.inscribirActividad(idCli2, idAct, "Efectivo", 5000.0, "2026-10-15")
-
-        buscarCliente()
         findViewById<Button>(R.id.btnBuscar).setOnClickListener { buscarCliente() }
         etBuscarDni.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -59,8 +48,13 @@ class ListadoClientesActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnVolver).setOnClickListener { finish() }
     }
 
+    override fun onResume() {
+        super.onResume()
+        buscarCliente()
+    }
+
     private fun buscarCliente() {
-        val lista = db.listarClientes(etBuscarDni.text.toString().trim())
+        val lista = dbHelper.listarClientes(etBuscarDni.text.toString().trim())
         adapter.actualizar(lista)
         tvMensaje.text = if (lista.isEmpty()) "No se encontraron clientes" else "${lista.size} cliente(s)"
     }
