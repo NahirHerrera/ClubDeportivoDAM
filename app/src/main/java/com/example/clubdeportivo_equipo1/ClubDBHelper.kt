@@ -274,4 +274,120 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         return resultado
     }
 
+    // ---------- Cobrar cuota (Gastón) ----------
+    // La cuota está al día si socios.fecha_vencimiento_cuota es hoy o una fecha posterior.
+
+    // Busca un cliente por DNI e indica si es socio y si tiene la cuota al día. Null si no existe.
+    fun buscarSocioCuota(dni: String): SocioCuota? =
+        readableDatabase.rawQuery(
+            """SELECT c.idCliente, c.nombre, c.apellido, c.dni,
+                      s.idCliente IS NOT NULL,
+                      s.nroCarnet,
+                      s.fecha_vencimiento_cuota,
+                      s.fecha_vencimiento_cuota >= date('now', 'localtime')
+               FROM clientes c
+               LEFT JOIN socios s ON s.idCliente = c.idCliente
+               WHERE c.dni = ?""",
+            arrayOf(dni)
+        ).use {
+            if (!it.moveToFirst()) {
+                null
+            } else {
+                val esSocio = it.getInt(4) == 1
+                SocioCuota(
+                    idCliente = it.getInt(0),
+                    nombre = it.getString(1),
+                    apellido = it.getString(2),
+                    dni = it.getString(3),
+                    esSocio = esSocio,
+                    nroCarnet = if (esSocio) it.getInt(5) else null,
+                    fechaVencimiento = if (esSocio) it.getString(6) else null,
+                    cuotaAlDia = esSocio && it.getInt(7) == 1
+                )
+            }
+        }
+
+    // Registra el pago de la cuota en una sola transacción:
+    // 1) cuota pagada, 2) pago con su N° de comprobante, 3) nuevo vencimiento del socio (hoy + 1 mes).
+    // Devuelve null si algo falla (en ese caso no se guarda nada).
+    fun registrarPagoCuota(idCliente: Int, montoCuota: Double, montoPagado: Double): PagoCuota? {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val (hoy, nuevoVencimiento) = db.rawQuery(
+                "SELECT date('now', 'localtime'), date('now', 'localtime', '+1 month')", null
+            ).use { it.moveToFirst(); it.getString(0) to it.getString(1) }
+
+            val idCuota = db.insert("cuota", null, ContentValues().apply {
+                put("idCliente", idCliente)
+                put("monto", montoCuota)
+                put("fechaVencimiento", nuevoVencimiento)
+                put("estado", "Pagada")
+            })
+            if (idCuota == -1L) return null
+
+            // Los comprobantes arrancan en 1001
+            val nroComprobante = db.rawQuery(
+                "SELECT COALESCE(MAX(nroComprobante), 1000) + 1 FROM pagos", null
+            ).use { it.moveToFirst(); it.getInt(0) }
+
+            val idPago = db.insert("pagos", null, ContentValues().apply {
+                put("idCuota", idCuota)
+                put("idCliente", idCliente)
+                put("monto", montoPagado)
+                put("fechaPago", hoy)
+                put("nroComprobante", nroComprobante)
+            })
+            if (idPago == -1L) return null
+
+            val filas = db.update(
+                "socios",
+                ContentValues().apply { put("fecha_vencimiento_cuota", nuevoVencimiento) },
+                "idCliente = ?",
+                arrayOf(idCliente.toString())
+            )
+            if (filas != 1) return null
+
+            db.setTransactionSuccessful()
+            return PagoCuota(nroComprobante, hoy, nuevoVencimiento)
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    // Datos de prueba para Cobrar Cuota. Usa INSERT OR IGNORE, así que se puede llamar
+    // muchas veces sin duplicar nada. Los vencimientos se calculan la primera vez que se cargan.
+    fun cargarDatosPruebaCobrarCuota() {
+        // nombre, apellido, dni, nroCarnet (null = no socio), vencimiento relativo a hoy
+        val datos: List<List<Any?>> = listOf(
+            listOf("Juan", "Perez", "26298456", 1, "+20 days"),
+            listOf("María", "Gómez", "30123456", 2, "-10 days"),
+            listOf("Carlos", "López", "28555111", 3, "-40 days"),
+            listOf("Lucía", "Fernández", "35987654", 4, "+1 month"),
+            listOf("Martín", "Rodríguez", "33444222", null, null),
+            listOf("Sofía", "Martínez", "40111222", 6, "-3 days"),
+            listOf("Diego", "Sánchez", "27666333", 7, "+5 days")
+        )
+
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            for ((nombre, apellido, dni, nroCarnet, vencimiento) in datos) {
+                db.execSQL(
+                    "INSERT OR IGNORE INTO clientes(nombre, apellido, tipoDoc, dni) VALUES (?, ?, 'DNI', ?)",
+                    arrayOf(nombre, apellido, dni)
+                )
+                if (nroCarnet != null) {
+                    db.execSQL(
+                        """INSERT OR IGNORE INTO socios(idCliente, nroCarnet, fecha_vencimiento_cuota)
+                           SELECT idCliente, ?, date('now', 'localtime', ?) FROM clientes WHERE dni = ?""",
+                        arrayOf(nroCarnet, vencimiento, dni)
+                    )
+                }
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
 }

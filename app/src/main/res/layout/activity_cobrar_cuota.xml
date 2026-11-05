@@ -216,6 +216,16 @@
                 app:cornerRadius="8dp"/>
         </LinearLayout>
 
+        <!-- Lee el QR del carnet de un socio y abre su carnet -->
+        <Button
+            android:id="@+id/btnEscanearCarnet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Escanear Carnet"
+            android:backgroundTint="@color/botones"
+            android:textColor="@color/black"
+            app:cornerRadius="8dp"/>
+
         <Button
             android:id="@+id/btnVolver"
             android:layout_width="wrap_content"
