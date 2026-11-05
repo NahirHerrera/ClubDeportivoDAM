@@ -6,6 +6,6 @@ data class ClienteListado (
         val nombre: String,
         val apellido: String,
         val dni: String,
-        val fecha: String,
-        val actividades: String
+        val fecha: String?,
+        val actividades: String?
 )

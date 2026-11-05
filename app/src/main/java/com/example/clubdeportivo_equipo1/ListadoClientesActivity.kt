@@ -40,12 +40,12 @@ class ListadoClientesActivity : AppCompatActivity() {
         }
 
         // ---------- Listado de clientes (Datos de prueba) ----------
-        val idCli = db.insertarCliente("Lucía", "Pérez", "DNI", "40123456").toInt()
+        val idCli = db.insertarCliente("Lucía", "Pérez", "Socio", "40123456", true).toInt()
         db.insertarSocio(idCli, 1001, "2026-12-31")
         val idAct = db.insertarActividad("Musculación", 5000.0).toInt()
         db.inscribirActividad(idCli, idAct, "Efectivo", 5000.0, "2026-10-01")
 
-        val idCli2 = db.insertarCliente("Martín", "Gómez", "DNI", "38111222").toInt()
+        val idCli2 = db.insertarCliente("Martín", "Gómez", "No socio", "38111222", false).toInt()
         db.inscribirActividad(idCli2, idAct, "Efectivo", 5000.0, "2026-10-15")
 
         buscarCliente()
