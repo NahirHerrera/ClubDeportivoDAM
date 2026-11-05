@@ -156,7 +156,6 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         }
 
         val resultado = db.insert("clientes", null, valores)
-        db.close()
         return resultado
     }
 
@@ -170,7 +169,6 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         }
 
         val resultado = db.insert("socios", null, valores)
-        db.close()
         return resultado
     }
 
@@ -183,7 +181,6 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         }
 
         val resultado = db.insert("actividades", null, valores)
-        db.close()
         return resultado
     }
 
@@ -199,7 +196,6 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         }
 
         val resultado = db.insert("inscripcion_actividad", null, valores)
-        db.close()
         return resultado
     }
     fun listarClientes(dni: String): List<ClienteListado> {
@@ -273,5 +269,4 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         db.close()
         return resultado
     }
-
 }
