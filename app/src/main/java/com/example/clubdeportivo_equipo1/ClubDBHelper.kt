@@ -1,5 +1,6 @@
 package com.example.clubdeportivo_equipo1
 
+import android.R
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -36,7 +37,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
                 idCliente INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT NOT NULL,
                 apellido TEXT NOT NULL,
-                tipoDoc TEXT NOT NULL,
+                tipoCliente TEXT NOT NULL,
                 dni TEXT NOT NULL UNIQUE,
                 aptoFisico INTEGER NOT NULL DEFAULT 0
             )""".trimIndent()
@@ -46,7 +47,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
             """CREATE TABLE socios(
                 idCliente INTEGER PRIMARY KEY,
                 nroCarnet INTEGER NOT NULL,
-                fecha_vencimiento_cuota TEXT NOT NULL,
+                fecha_vencimiento_cuota DATE,
                 FOREIGN KEY (idCliente) REFERENCES clientes(idCliente)
             )""".trimIndent()
         )
@@ -64,8 +65,8 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         db.execSQL(
             """CREATE TABLE nosocios(
                 idCliente INTEGER PRIMARY KEY,
-                idActividad INTEGER NOT NULL,
-                fechaActividad TEXT NOT NULL,
+                idActividad INTEGER,
+                fechaActividad TEXT,
                 FOREIGN KEY (idCliente) REFERENCES clientes(idCliente),
                 FOREIGN KEY (idActividad) REFERENCES actividades(idActividad)
             )""".trimIndent()
@@ -145,14 +146,15 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
 
     // ---------- Listado de clientes (Nahir) ----------
 
-    fun insertarCliente(nombre: String, apellido: String, tipoDoc: String, dni: String): Long {
+    fun insertarCliente(nombre: String, apellido: String, tipoCliente: String, dni: String, aptoFisico: Boolean): Long {
         val db = writableDatabase
 
         val valores = ContentValues().apply {
             put("nombre", nombre)
             put("apellido", apellido)
-            put("tipoDoc", tipoDoc)
+            put("tipoCliente", tipoCliente)
             put("dni", dni)
+            put("aptoFisico", aptoFisico)
         }
 
         val resultado = db.insert("clientes", null, valores)
@@ -160,7 +162,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         return resultado
     }
 
-    fun insertarSocio(idCliente: Int, nroCarnet: Int, vencimiento: String): Long {
+    fun insertarSocio(idCliente: Int, nroCarnet: Int, vencimiento: String?): Long {
         val db = writableDatabase
 
         val valores = ContentValues().apply {
@@ -170,6 +172,24 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         }
 
         val resultado = db.insert("socios", null, valores)
+        db.close()
+        return resultado
+    }
+
+    fun proximoNroCarnet(): Int =
+        readableDatabase.rawQuery(
+            "SELECT COALESCE(MAX(nroCarnet), 1000) + 1 FROM socios", null
+        ).use { it.moveToFirst(); it.getInt(0) }
+
+    fun insertarNoSocio(idCliente: Int, idActividad: Int?, fechaActividad: String?): Long {
+        val db = writableDatabase
+
+        val valores = ContentValues().apply{
+            put("idCliente", idCliente)
+            put("idActividad", idActividad)
+            put("fechaActividad", fechaActividad)
+        }
+        val resultado = db.insert("nosocios", null, valores)
         db.close()
         return resultado
     }
@@ -374,7 +394,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         try {
             for ((nombre, apellido, dni, nroCarnet, vencimiento) in datos) {
                 db.execSQL(
-                    "INSERT OR IGNORE INTO clientes(nombre, apellido, tipoDoc, dni) VALUES (?, ?, 'DNI', ?)",
+                    "INSERT OR IGNORE INTO clientes(nombre, apellido, tipoCliente, dni) VALUES (?, ?, ?, ?)",
                     arrayOf(nombre, apellido, dni)
                 )
                 if (nroCarnet != null) {

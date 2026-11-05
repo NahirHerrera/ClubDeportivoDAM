@@ -57,7 +57,7 @@
                     android:textColor="@color/white"
                     />
 
-                <EditText
+                <Spinner
                     android:id="@+id/TipoCliente"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -118,29 +118,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="10dp"
-                >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Tipo"
-                    android:layout_marginBottom="5dp"
-                    android:textColor="@color/white"
-                    />
-
-                <Spinner
-                    android:id="@+id/tipoSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"/>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -177,6 +154,7 @@
                 >
 
                 <CheckBox
+                    android:id="@+id/checkAptoFisico"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     />
