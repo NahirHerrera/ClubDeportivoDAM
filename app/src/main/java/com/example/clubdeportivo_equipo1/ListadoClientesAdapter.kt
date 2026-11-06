@@ -5,8 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-class ListadoClientesAdapter(private var items: List<ClienteListado>) : RecyclerView.Adapter<ListadoClientesAdapter.VH>() {
-
+class ListadoClientesAdapter(private var items: List<ClienteListado>,
+private val onLongClick: (ClienteListado) -> Unit
+) : RecyclerView.Adapter<ListadoClientesAdapter.VH>() {
     class VH(v: View) : RecyclerView.ViewHolder(v) {
         val tvId: TextView = v.findViewById(R.id.tvIdCliente)
         val tvTipo: TextView = v.findViewById(R.id.tvTipoCliente)
@@ -29,6 +30,10 @@ class ListadoClientesAdapter(private var items: List<ClienteListado>) : Recycler
         h.tvCuota.text = if (c.tipo == "Socio") "Cuota: Al día" else "Cuota: No aplica"
         h.tvFecha.text = "Fecha de inscripción: ${c.fecha ?: "-"}"
         h.tvActividades.text = c.actividades?.lines()?.joinToString("\n") { "• $it" } ?: "Sin actividades inscriptas"
+        h.itemView.setOnLongClickListener {
+            onLongClick(c)
+            true
+        }
     }
 
     override fun getItemCount() = items.size

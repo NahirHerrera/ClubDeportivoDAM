@@ -11,13 +11,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 
 class ListadoClientesActivity : AppCompatActivity() {
 
     private lateinit var dbHelper: ClubDBHelper
     private lateinit var etBuscarDni: EditText
     private lateinit var tvMensaje: TextView
-    private val adapter = ListadoClientesAdapter(emptyList())
+    private val adapter = ListadoClientesAdapter(emptyList()) { confirmarEliminar(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,5 +59,18 @@ class ListadoClientesActivity : AppCompatActivity() {
         val lista = dbHelper.listarClientes(etBuscarDni.text.toString().trim())
         adapter.actualizar(lista)
         tvMensaje.text = if (lista.isEmpty()) "No se encontraron clientes" else "${lista.size} cliente(s)"
+    }
+    private fun confirmarEliminar(c: ClienteListado) {
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar cliente")
+            .setMessage("¿Querés eliminar a ${c.nombre} ${c.apellido}?")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Eliminar") { _, _ ->
+                if (dbHelper.eliminarCliente(c.id) > 0) {
+                    Toast.makeText(this, "Cliente eliminado correctamente", Toast.LENGTH_SHORT).show()
+                    buscarCliente()
+                }
+            }
+            .show()
     }
 }

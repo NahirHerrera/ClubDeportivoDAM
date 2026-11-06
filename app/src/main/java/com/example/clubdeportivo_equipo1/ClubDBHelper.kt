@@ -255,6 +255,28 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         return lista
     }
 
+    fun eliminarCliente(id: Int): Int {
+        val db = writableDatabase
+        val args = arrayOf(id.toString())
+        var resultado = 0
+        db.beginTransaction()
+        try {
+            db.delete("pagos", "idCliente = ?", args)
+            db.delete("cuota", "idCliente = ?", args)
+            db.delete("inscripcion_actividad", "idCliente = ?", args)
+            db.delete("inscripcion", "idCliente = ?", args)
+            db.delete("carnet", "idCliente = ?", args)
+            db.delete("nosocios", "idCliente = ?", args)
+            db.delete("socios", "idCliente = ?", args)
+            resultado = db.delete("clientes", "idCliente = ?", args)
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+        db.close()
+        return resultado
+    }
+
     // ---------- Actividades (Alex) ----------
 
     fun obtenerActividades(): MutableList<Actividades>{
