@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 
 
-class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null, 1) {
+class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null, 2) {
 
     override fun onCreate(db: SQLiteDatabase) {
 
@@ -39,7 +39,8 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
                 apellido TEXT NOT NULL,
                 tipoCliente TEXT NOT NULL,
                 dni TEXT NOT NULL UNIQUE,
-                aptoFisico INTEGER NOT NULL DEFAULT 0
+                aptoFisico INTEGER NOT NULL DEFAULT 0,
+                fechaApto TEXT
             )""".trimIndent()
         )
 
@@ -130,8 +131,8 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         )
     }
 
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("Not get implemented")
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        if (oldVersion < 2) db.execSQL("ALTER TABLE clientes ADD COLUMN fechaApto TEXT")
     }
 
     // ---------- Login para administrador y empleado de Fitness Center -------
@@ -345,6 +346,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
                 put("estado", "Pagada")
             })
             if (idCuota == -1L) return null
+            db.execSQL("UPDATE clientes SET fechaApto = ? WHERE idCliente = ? AND fechaApto IS NULL", arrayOf(hoy, idCliente))
 
             // Los comprobantes arrancan en 1001
             val nroComprobante = db.rawQuery(
@@ -373,7 +375,12 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         } finally {
             db.endTransaction()
         }
+
     }
+
+    fun fechaAptoFisico(dni: String): String? =
+        readableDatabase.rawQuery("SELECT fechaApto FROM clientes WHERE dni = ?", arrayOf(dni))
+            .use { if (it.moveToFirst()) it.getString(0) else null }
 
     // Datos de prueba para Cobrar Cuota. Usa INSERT OR IGNORE, así que se puede llamar
     // muchas veces sin duplicar nada. Los vencimientos se calculan la primera vez que se cargan.

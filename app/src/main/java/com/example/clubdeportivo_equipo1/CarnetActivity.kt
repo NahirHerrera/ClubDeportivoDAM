@@ -39,6 +39,7 @@ class CarnetActivity : AppCompatActivity() {
         val dni = intent.getStringExtra(CobrarCuotaActivity.EXTRA_DNI_SOCIO)
         val db = ClubDBHelper(this)
         val socio = dni?.let { db.buscarSocioCuota(it) }
+        val fechaAptoFisico = dni?.let { db.fechaAptoFisico(it) }
         db.close()
 
         if (socio == null || !socio.esSocio) {
@@ -53,7 +54,7 @@ class CarnetActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.Vigencia).text =
             if (socio.cuotaAlDia) "Vigencia: ACTIVO" else "Vigencia: INACTIVO"
 
-        mostrarAptoFisico(socio.dni)
+        mostrarAptoFisico(fechaAptoFisico)
 
         // QR con el DNI del socio, para escanearlo desde Cobrar Cuota
         val matrix = MultiFormatWriter().encode(
@@ -67,12 +68,10 @@ class CarnetActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnVolver).setOnClickListener { finish() }
     }
 
-    // La base todavía no guarda la fecha del apto físico: se toma de SociosRepository (memoria)
-    private fun mostrarAptoFisico(dni: String) {
+    private fun mostrarAptoFisico(fechaApto: String?) {
         val tvApto = findViewById<TextView>(R.id.apto_fisico)
         val tvPresentado = findViewById<TextView>(R.id.apto_fisico_vencimiento)
 
-        val fechaApto = SociosRepository.buscarPorDni(dni)?.aptoFisicoFecha
         if (fechaApto == null) {
             tvApto.text = "APTO FISICO: SIN DATOS"
             tvPresentado.text = "Sin fecha de presentación"
@@ -80,13 +79,12 @@ class CarnetActivity : AppCompatActivity() {
         }
 
         tvApto.text = if (aptoVigente(fechaApto)) "APTO FISICO: VIGENTE" else "APTO FISICO: VENCIDO"
-        tvPresentado.text = "Presentado: $fechaApto"
+        tvPresentado.text = "Presentado: ${fechaApto.split("-").reversed().joinToString("/")}"
     }
 
-    // El apto físico vence un año después de presentado
     private fun aptoVigente(fechaPresentacion: String): Boolean {
         val fecha = runCatching {
-            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fechaPresentacion)
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fechaPresentacion)
         }.getOrNull() ?: return false
         val vence = Calendar.getInstance().apply {
             time = fecha
