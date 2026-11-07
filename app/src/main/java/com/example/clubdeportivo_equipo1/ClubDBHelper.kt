@@ -283,12 +283,12 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
         val lista = mutableListOf<Actividades>()
         val db = readableDatabase
 
-        val cursor = db.rawQuery("SELECT idActividad, nombreActividad, costo_pase_diario FROM actividades ORDER BY id DESC", null)
+        val cursor = db.rawQuery("SELECT idActividad, nombreActividad, costo_pase_diario FROM actividades ORDER BY idActividad DESC", null)
 
         cursor.use{
             while(it.moveToNext()){
                     lista.add(Actividades(
-                        Id = it.getInt(0),
+                        IdActividad = it.getInt(0),
                         nombre = it.getString(1),
                         costo = it.getDouble(2)
                         )
@@ -300,21 +300,21 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
 
     }
 
-    fun buscarCliente(dni: String): String? {
-        val db = readableDatabase
-        val cursor = db.rawQuery("SELECT nombre, apellido FROM clientes WHERE dni = ?", arrayOf(dni))
-
-
-        var resultado: String? = null
-
-        cursor.use {
+    fun buscarCliente(dni: String): Cliente? {
+        return readableDatabase.rawQuery(
+            "SELECT idCliente, nombre, apellido FROM clientes WHERE dni = ?",
+            arrayOf(dni)
+        ).use {
             if (it.moveToFirst()) {
-                resultado = "${it.getString(0)} ${it.getString(1)}"
+                Cliente(
+                    idCliente = it.getInt(0),
+                    nombre = it.getString(1),
+                    apellido = it.getString(2)
+                )
+            } else {
+                null
             }
         }
-
-        db.close()
-        return resultado
     }
 
     // ---------- Cobrar cuota (Gastón) ----------
