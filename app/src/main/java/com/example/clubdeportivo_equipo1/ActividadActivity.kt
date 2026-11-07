@@ -2,6 +2,7 @@ package com.example.clubdeportivo_equipo1
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -11,10 +12,19 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class ActividadActivity : AppCompatActivity() {
+    private lateinit var dbHelper: ClubDBHelper
+    private var clienteActual: Cliente? = null
+    private var formaPagoElegida: String? = null
+    private var factorPago: Double = 1.0
+    private lateinit var adapter: ActividadAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,6 +36,7 @@ class ActividadActivity : AppCompatActivity() {
         }
 
         val etDocumento = findViewById<EditText>(R.id.etDocumento)
+        dbHelper = ClubDBHelper(this)
 
         //Botón ir a pagar
 
@@ -42,13 +53,13 @@ class ActividadActivity : AppCompatActivity() {
 
             vista.findViewById<Button>(R.id.btnPagar).setOnClickListener {
                 when (rgFormaPago.checkedRadioButtonId) {
-                    R.id.rbEfectivo -> { /* pago con 10% de descuento */ }
-                    R.id.rbTarjeta3 -> { /* 3 cuotas */ }
-                    R.id.rbTarjeta6 -> { /* 6 cuotas */ }
+                    R.id.rbEfectivo -> { formaPagoElegida="Efectivo"; factorPago = 0.9 }
+                    R.id.rbTarjeta3 -> { formaPagoElegida="Tarjeta_3_Cuotas"; factorPago = 1.0 }
+                    R.id.rbTarjeta6 -> { formaPagoElegida="Tarjeta_6_Cuotas"; factorPago = 1.10 }
                     -1 -> Toast.makeText(this, "Elegí una forma de pago", Toast.LENGTH_SHORT).show()
                 }
                 if (rgFormaPago.checkedRadioButtonId != -1) {
-                    Toast.makeText(this, "Pago realizado", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Forma de pago: $formaPagoElegida", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 }
             }
@@ -79,12 +90,11 @@ class ActividadActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    val dbHelper = ClubDBHelper(this)
+                    val cliente = dbHelper.buscarCliente(documento)
+                    clienteActual = cliente
 
-                    val nombre = dbHelper.buscarCliente(documento)
-
-                    if(nombre != null){
-                        Toast.makeText(this, "Cliente encontrado: $nombre", Toast.LENGTH_SHORT).show()
+                    if(cliente != null){
+                        Toast.makeText(this, "Cliente encontrado: ${cliente.nombre} ${cliente.apellido}", Toast.LENGTH_SHORT).show()
                     }
                     else{
                         Toast.makeText(this, "Cliente no encontrado", Toast.LENGTH_SHORT).show()
@@ -93,38 +103,40 @@ class ActividadActivity : AppCompatActivity() {
 
                 }
             }
+
         }
 
 
-
-
-        //Tarjetas de actividades botón Inscribir
-        val tarjetas = listOf(
-            findViewById<View>(R.id.tarjeta1),
-            findViewById<View>(R.id.tarjeta2),
-            findViewById<View>(R.id.tarjeta3),
-            findViewById<View>(R.id.tarjeta4),
-            findViewById<View>(R.id.tarjeta5)
-        )
+        //Botón inscribir
+        val rv = findViewById<RecyclerView>(R.id.rvActividades)
+        adapter = ActividadAdapter(dbHelper.obtenerActividades())
+        rv.layoutManager = LinearLayoutManager(this)
+        rv.adapter = adapter
 
         val btnInscribir = findViewById<Button>(R.id.btnInscribir)
 
-        // Pintar/despintar al tocar una tarjeta
-        tarjetas.forEach { tarjeta ->
-            tarjeta.setOnClickListener { it.isSelected = !it.isSelected }
-        }
-
-        // Validación al tocar "Inscribir"
         btnInscribir.setOnClickListener {
-            if (tarjetas.none { it.isSelected }) {
+            val elegidas = adapter.getSeleccionadas()
+
+            if (elegidas.isEmpty()) {
                 Toast.makeText(this, "Seleccioná al menos una actividad", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            if (clienteActual == null) {
+                Toast.makeText(this, "Primero buscá un cliente", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (formaPagoElegida == null) {
+                Toast.makeText(this, "Primero elegí la forma de pago", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             else{
-                Toast.makeText(this, "¡Inscripción realizada!", Toast.LENGTH_SHORT).show()
+                val resultado = registrarInscripciones()
+                if (!resultado) return@setOnClickListener
+                finish()
             }
 
-            // Hay al menos una actividad seleccionada: continuar con la inscripción
+
         }
 
 
@@ -133,4 +145,35 @@ class ActividadActivity : AppCompatActivity() {
             startActivity(Intent(this, HomeActivity::class.java))
         }
     }
+
+    private fun registrarInscripciones(): Boolean {
+        val cliente = clienteActual ?: return false
+        val formaPago = formaPagoElegida ?: return false
+        val elegidas = adapter.getSeleccionadas()
+        if (elegidas.isEmpty()) return false
+
+        val fecha = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
+            .format(java.util.Date())
+
+        var fallidas = 0
+        for (a in elegidas) {
+            val id = dbHelper.inscribirActividad(
+                cliente.idCliente, a.IdActividad, formaPago, a.costo * factorPago, fecha
+            )
+            if (id == -1L) fallidas++
+        }
+
+        if (fallidas == 0) {
+            Toast.makeText(this, "¡Inscripción realizada!", Toast.LENGTH_SHORT).show()
+            formaPagoElegida = null
+            factorPago = 1.0
+
+        } else {
+            Toast.makeText(this, "No se pudo inscribir a $fallidas actividad(es) (¿ya inscripto?)",
+                Toast.LENGTH_LONG).show()
+        }
+
+        return fallidas == 0
+    }
+
 }
