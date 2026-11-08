@@ -1,6 +1,5 @@
 package com.example.clubdeportivo_equipo1
 
-import android.R
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -279,15 +278,15 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
 
     // ---------- Actividades (Alex) ----------
 
-    fun obtenerActividades(): MutableList<Actividades>{
-        val lista = mutableListOf<Actividades>()
+    fun obtenerActividades(): MutableList<Actividad>{
+        val lista = mutableListOf<Actividad>()
         val db = readableDatabase
 
         val cursor = db.rawQuery("SELECT idActividad, nombreActividad, costo_pase_diario FROM actividades ORDER BY idActividad DESC", null)
 
         cursor.use{
             while(it.moveToNext()){
-                    lista.add(Actividades(
+                    lista.add(Actividad(
                         IdActividad = it.getInt(0),
                         nombre = it.getString(1),
                         costo = it.getDouble(2)
@@ -316,6 +315,17 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
             }
         }
     }
+
+    fun actividadesInscriptas(idCliente: Int): Set<Int> {
+        val ids = mutableSetOf<Int>()
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT idActividad FROM inscripcion_actividad WHERE idCliente = ?",
+            arrayOf(idCliente.toString()))
+
+        cursor.use { while (it.moveToNext()) ids.add(it.getInt(0)) }
+        return ids
+    }
+
 
     // ---------- Cobrar cuota (Gastón) ----------
     // La cuota está al día si socios.fecha_vencimiento_cuota es hoy o una fecha posterior.

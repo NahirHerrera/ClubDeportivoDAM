@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.collections.filter
 
 class ActividadAdapter(
-    private val actividades: List<Actividades>
+    private val actividades: List<Actividad>
 ) : RecyclerView.Adapter<ActividadAdapter.ViewHolder>() {
 
     // IDs de las actividades seleccionadas
@@ -46,6 +46,6 @@ class ActividadAdapter(
     override fun getItemCount() = actividades.size
 
     // Para usar desde la Activity al tocar "Inscribir"
-    fun getSeleccionadas(): List<Actividades> =
+    fun getSeleccionadas(): List<Actividad> =
         actividades.filter { it.IdActividad in seleccionadas }
 }

@@ -52,6 +52,7 @@ class ActividadActivity : AppCompatActivity() {
             val rgFormaPago = vista.findViewById<RadioGroup>(R.id.rgFormaPago)
 
             vista.findViewById<Button>(R.id.btnPagar).setOnClickListener {
+                if (!puedeAvanzar()) return@setOnClickListener
                 when (rgFormaPago.checkedRadioButtonId) {
                     R.id.rbEfectivo -> { formaPagoElegida="Efectivo"; factorPago = 0.9 }
                     R.id.rbTarjeta3 -> { formaPagoElegida="Tarjeta_3_Cuotas"; factorPago = 1.0 }
@@ -116,6 +117,7 @@ class ActividadActivity : AppCompatActivity() {
         val btnInscribir = findViewById<Button>(R.id.btnInscribir)
 
         btnInscribir.setOnClickListener {
+            if (!puedeAvanzar()) return@setOnClickListener
             val elegidas = adapter.getSeleccionadas()
 
             if (elegidas.isEmpty()) {
@@ -146,6 +148,7 @@ class ActividadActivity : AppCompatActivity() {
         }
     }
 
+    //Una vez seleccionado el cliente, la forma de pago y las actividades, se registra la inscripción.
     private fun registrarInscripciones(): Boolean {
         val cliente = clienteActual ?: return false
         val formaPago = formaPagoElegida ?: return false
@@ -174,6 +177,35 @@ class ActividadActivity : AppCompatActivity() {
         }
 
         return fallidas == 0
+    }
+
+    //Función que verifica si el cliente ya está inscripto en alguna de las actividades seleccionadas.
+    private fun puedeAvanzar(): Boolean {
+        val cliente = clienteActual
+        if (cliente == null) {
+            Toast.makeText(this, "Primero buscá un cliente", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        val elegidas = adapter.getSeleccionadas()
+        if (elegidas.isEmpty()) {
+            Toast.makeText(this, "Seleccioná al menos una actividad", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        val inscriptas = dbHelper.actividadesInscriptas(cliente.idCliente)
+        val repetidas = elegidas.filter { it.IdActividad in inscriptas }
+
+        if (repetidas.isNotEmpty()) {
+            Toast.makeText(
+                this,
+                "Ya está inscripto en: ${repetidas.joinToString(", ") { it.nombre }}. Deseleccionalas para continuar.",
+                Toast.LENGTH_LONG
+            ).show()
+            return false
+        }
+
+        return true
     }
 
 }
