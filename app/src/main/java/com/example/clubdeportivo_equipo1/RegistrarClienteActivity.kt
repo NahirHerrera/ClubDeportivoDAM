@@ -72,6 +72,10 @@ class RegistrarClienteActivity : AppCompatActivity() {
                     textDocumento.requestFocus()
                 }
 
+                !checkAptoFisico.isChecked -> {
+                    Toast.makeText(this, "Debe presentar el apto físico vigente", Toast.LENGTH_SHORT).show()
+                }
+
                 else -> {
                     val tipoCliente = spinner.selectedItem.toString()
                     val aptoFisico = checkAptoFisico.isChecked

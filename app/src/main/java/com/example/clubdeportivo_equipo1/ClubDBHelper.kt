@@ -155,6 +155,7 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
             put("tipoCliente", tipoCliente)
             put("dni", dni)
             put("aptoFisico", aptoFisico)
+            put("fechaApto", if (aptoFisico) java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date()) else null)
         }
 
         val resultado = db.insert("clientes", null, valores)
