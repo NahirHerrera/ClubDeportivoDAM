@@ -55,8 +55,8 @@ class ActividadActivity : AppCompatActivity() {
                 if (!puedeAvanzar()) return@setOnClickListener
                 when (rgFormaPago.checkedRadioButtonId) {
                     R.id.rbEfectivo -> { formaPagoElegida="Efectivo"; factorPago = 0.9 }
-                    R.id.rbTarjeta3 -> { formaPagoElegida="Tarjeta_3_Cuotas"; factorPago = 1.0 }
-                    R.id.rbTarjeta6 -> { formaPagoElegida="Tarjeta_6_Cuotas"; factorPago = 1.10 }
+                    R.id.rbTarjeta3 -> { formaPagoElegida="Tarjeta: 3 Cuotas"; factorPago = 1.0 }
+                    R.id.rbTarjeta6 -> { formaPagoElegida="Tarjeta: 6 Cuotas"; factorPago = 1.10 }
                     -1 -> Toast.makeText(this, "Elegí una forma de pago", Toast.LENGTH_SHORT).show()
                 }
                 if (rgFormaPago.checkedRadioButtonId != -1) {
