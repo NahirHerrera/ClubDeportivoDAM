@@ -102,7 +102,7 @@ class RegistrarClienteActivity : AppCompatActivity() {
 
                     // 3. Todo salió bien
                     Toast.makeText(this, "$tipoCliente registrado correctamente", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
 
 
                 }
@@ -110,7 +110,7 @@ class RegistrarClienteActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnVolver).setOnClickListener {
-            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
         }
 
     }
