@@ -11,15 +11,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class ListadoDeudoresActivity : AppCompatActivity() {
 
+    private lateinit var db: ClubDBHelper
     private lateinit var etBuscarDni: EditText
     private lateinit var tvMensaje: TextView
     private lateinit var contenedor: LinearLayout
 
-    private val formatoMoneda = NumberFormat.getCurrencyInstance(Locale("es", "AR"))
+    private val formatoMoneda = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-AR"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +35,7 @@ class ListadoDeudoresActivity : AppCompatActivity() {
             insets
         }
 
+        db = ClubDBHelper(this)
         etBuscarDni = findViewById(R.id.etBuscarDni)
         tvMensaje = findViewById(R.id.tvMensaje)
         contenedor = findViewById(R.id.contenedorDeudores)
@@ -55,7 +60,7 @@ class ListadoDeudoresActivity : AppCompatActivity() {
 
     private fun mostrarDeudores() {
         val dni = etBuscarDni.text.toString().trim()
-        val deudores = SociosRepository.deudores()
+        val deudores = db.listarDeudores()
         // Con el campo vacío se muestran todos; si no, se filtra por DNI
         val lista = if (dni.isEmpty()) deudores else deudores.filter { it.dni.startsWith(dni) }
 
@@ -75,14 +80,24 @@ class ListadoDeudoresActivity : AppCompatActivity() {
 
         lista.forEach { socio ->
             val item = layoutInflater.inflate(R.layout.item_deudor, contenedor, false)
-            item.findViewById<TextView>(R.id.tvIdCliente).text = "ID Cliente: ${socio.numeroFormateado}"
-            item.findViewById<TextView>(R.id.tvNombre).text = socio.nombreCompleto
+            item.findViewById<TextView>(R.id.tvIdCliente).text = "N° Socio: ${socio.nroSocioFormateado}"
+            item.findViewById<TextView>(R.id.tvNombre).text = "${socio.apellido}, ${socio.nombre}"
             item.findViewById<TextView>(R.id.tvDni).text = "DNI: ${socio.dniFormateado}"
-            item.findViewById<TextView>(R.id.tvFechaInscripcion).text =
-                "Fecha de inscripción: ${socio.fechaInscripcion}"
+            item.findViewById<TextView>(R.id.tvVencimiento).text = textoVencimiento(socio.fechaVencimiento)
             item.findViewById<TextView>(R.id.tvMonto).text =
                 formatoMoneda.format(SociosRepository.VALOR_CUOTA)
             contenedor.addView(item)
         }
+    }
+
+    // "Venció el 22/10/2026 (hace 17 días)". La fecha de la base viene como yyyy-MM-dd
+    private fun textoVencimiento(fechaBase: String?): String {
+        if (fechaBase == null) return "Sin vencimiento cargado"
+        val formato = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val vence = formato.parse(fechaBase) ?: return "Venció el ${formatearFecha(fechaBase)}"
+        val hoy = formato.parse(formato.format(Date()))!!
+        val dias = TimeUnit.MILLISECONDS.toDays(hoy.time - vence.time)
+        val unidad = if (dias == 1L) "día" else "días"
+        return "Venció el ${formatearFecha(fechaBase)} (hace $dias $unidad)"
     }
 }

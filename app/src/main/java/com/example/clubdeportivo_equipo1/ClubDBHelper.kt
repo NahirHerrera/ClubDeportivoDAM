@@ -411,6 +411,36 @@ class ClubDBHelper(context: Context) : SQLiteOpenHelper(context, "Club.db", null
 
     }
 
+    // ---------- Listado de deudores (Guido) ----------
+    fun listarDeudores(): List<SocioCuota> {
+        val lista = mutableListOf<SocioCuota>()
+        readableDatabase.rawQuery(
+            """SELECT c.idCliente, c.nombre, c.apellido, c.dni, s.nroCarnet, s.fecha_vencimiento_cuota
+           FROM socios s
+           JOIN clientes c ON c.idCliente = s.idCliente
+           WHERE s.fecha_vencimiento_cuota IS NULL
+              OR s.fecha_vencimiento_cuota < date('now', 'localtime')
+           ORDER BY c.apellido, c.nombre""",
+            null
+        ).use {
+            while (it.moveToNext()) {
+                lista.add(
+                    SocioCuota(
+                        idCliente = it.getInt(0),
+                        nombre = it.getString(1),
+                        apellido = it.getString(2),
+                        dni = it.getString(3),
+                        esSocio = true,
+                        nroCarnet = it.getInt(4),
+                        fechaVencimiento = it.getString(5),
+                        cuotaAlDia = false
+                    )
+                )
+            }
+        }
+        return lista
+    }
+
     fun fechaAptoFisico(dni: String): String? =
         readableDatabase.rawQuery("SELECT fechaApto FROM clientes WHERE dni = ?", arrayOf(dni))
             .use { if (it.moveToFirst()) it.getString(0) else null }
